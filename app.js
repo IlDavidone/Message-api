@@ -21,12 +21,12 @@ app.get("/", (req, res) => {
 
 io.on('connection', (socket) => {
     console.log("A user connected!");
-    socket.on('message', (message) => {
-        io.emit('message', message);
-    })
+    socket.on('message', (uname, message) => {
+        io.emit('message', uname, message);
+    });
     socket.on('disconnect', () => {
         console.log("User disconnected :(")
-    })
+    });
 })
 
 server.listen(3000, () => {
