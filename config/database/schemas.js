@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const dbConnectionString = process.env.DB_ACCESS_STRING;
 
-const userConnection = mongoose.createConnection(dbConnectionString, {
+const connection = mongoose.createConnection(dbConnectionString, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -20,4 +20,4 @@ const userSchema = new mongoose.Schema({
 
 const User = connection.model('User', userSchema);
 
-module.exports = userConnection;
+module.exports = connection;
