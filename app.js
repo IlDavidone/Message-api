@@ -37,6 +37,11 @@ const sessionMiddleware = session({
     }
 });
 
+app.use((req, res, next) => {
+      res.header('Access-Control-Allow-Origin', '*'); // Or a specific origin
+      next();
+    });
+
 app.use(sessionMiddleware);
 io.use(sharedSession(sessionMiddleware, { autoSave: true }));
 

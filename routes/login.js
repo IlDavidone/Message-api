@@ -71,4 +71,8 @@ router.get("/register", isNotAuth, (req, res, next) => {
   res.render("register");
 });
 
+router.get("tv.mp3", (req, res, next) => {
+  
+})
+
 module.exports = router;
