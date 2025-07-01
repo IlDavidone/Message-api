@@ -7,15 +7,6 @@
   </head>
   <body>
     <div class="messages-body">
-      <div class="message-wrapper">
-        <div class="profile-message-wrapper">
-          <div class="profile-picture-placeholder"></div>
-        </div>
-        <div class="message-content">
-          <h4 class="profile-username">Yo</h4>
-          <p class="message">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus iaculis pharetra sollicitudin. Etiam a sem ut dui dignissim pretium. Nunc lacinia ante nec auctor egestas. Cras ullamcorper lorem in orci egestas, condimentum efficitur orci pharetra. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non quam nunc. Morbi magna nisi, ullamcorper at pellentesque vel, porttitor vel massa. Nam non porta urna, sed vehicula nulla. Nam leo metus, aliquet nec massa quis, dignissim tempus arcu. Praesent nec aliquam urna. Proin mollis ornare feugiat. Integer euismod tincidunt sagittis. Fusce et turpis quam. Donec et dolor ornare, dapibus augue non, tempor massa. Nam semper mauris quis tortor bibendum, id ultrices magna molestie.</p>
-        </div>
-      </div>
     </div>
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button class="send">Send</button>
@@ -41,9 +32,31 @@
       });
 
       socket.on("message", (uname, message) => {
-        const item = document.createElement("li");
-        item.textContent = uname + ": " + message;
-        messages.appendChild(item);
+        const date = new Date();
+        const dateHours = date.getHours();
+        const dateMinutes = date.getMinutes();
+        const body = document.querySelector(".messages-body");
+        const messageWrapper = document.createElement("div");
+        messageWrapper.classList.add("message-wrapper");
+        body.appendChild(messageWrapper);
+        const profilePictureWrapper = document.createElement("div");
+        profilePictureWrapper.classList.add("profile-picture-wrapper");
+        messageWrapper.appendChild(profilePictureWrapper);
+        const profilePicturePlaceholder = document.createElement("div");
+        profilePicturePlaceholder.classList.add("profile-picture-placeholder");
+        profilePictureWrapper.appendChild(profilePicturePlaceholder);
+        const messageContent = document.createElement("div");
+        messageContent.classList.add("message-content");
+        const profileUsername = document.createElement("h4");
+        profileUsername.textContent = uname;
+        profileUsername.classList.add("profile-username");
+        messageContent.appendChild(profileUsername);
+        const messageText = document.createElement("p");
+        messageText.textContent = message;
+        messageText.classList.add("message");
+        messageContent.appendChild(messageText);
+        messageWrapper.appendChild(messageContent);
+
         window.scrollTo(0, document.body.scrollHeight);
       });
     </script>
