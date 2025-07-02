@@ -9,23 +9,16 @@ const isAdmin = require("../controllers/auth").isAdmin;
 
 require('dotenv').config();
 
-router.get("/login", isNotAuth, (req, res, next) => {
-  res.render("login");
+router.get("/chat", isAuth, (req, res) => {
+  console.log(req.session);
+  console.log(req.user);
+  res.render("index", { username: req.user.username });
 });
 
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    successRedirect: "/chat",
-  }),
-  (req, res) => {
-    if (req.body.remember) {
-      req.session.cookie.maxAge = 14 * 24 * 60 * 60 * 1000;
-    } else {
-      req.session.cookie.expires = false;
-    }
-  }
-);
+router.get("/", (req, res, next) => {
+  res.send(
+    '<h1>Home</h1><p>Please <a href="/register">Register</a> or <a href="/login">Login</a></p>'
+  );
+});
 
 module.exports = router;

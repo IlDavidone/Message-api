@@ -61,11 +61,13 @@
         messageContent.classList.add("message-content");
         const usernameDateWrapper = document.createElement("div");
         usernameDateWrapper.classList.add("username-date-wrapper");
-        messageContent.appendChild(usernameDateWrapper)
+        messageContent.appendChild(usernameDateWrapper);
+
         const profileUsername = document.createElement("h4");
         profileUsername.textContent = uname;
         profileUsername.classList.add("profile-username");
         usernameDateWrapper.appendChild(profileUsername);
+        
         const messageDate = document.createElement("p");
         messageDate.textContent = `${dateHours}:${dateMinutes}`;
         messageDate.classList.add("message-date");

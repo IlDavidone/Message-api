@@ -76,7 +76,7 @@ p {
 }
 
 .message {
-  text-wrap: wrap;
+  overflow-wrap: break-word;
 }
 
 .username-date-wrapper {
