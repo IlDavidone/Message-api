@@ -35,25 +35,31 @@
         const date = new Date();
         const dateHours = date.getHours();
         const dateMinutes = date.getMinutes();
+
         const body = document.querySelector(".messages-body");
         const messageWrapper = document.createElement("div");
         messageWrapper.classList.add("message-wrapper");
         body.appendChild(messageWrapper);
+
         const profilePictureWrapper = document.createElement("div");
         profilePictureWrapper.classList.add("profile-picture-wrapper");
         messageWrapper.appendChild(profilePictureWrapper);
+
         const profilePicturePlaceholder = document.createElement("div");
         profilePicturePlaceholder.classList.add("profile-picture-placeholder");
         profilePictureWrapper.appendChild(profilePicturePlaceholder);
+
         const messageContent = document.createElement("div");
         messageContent.classList.add("message-content");
         const profileUsername = document.createElement("h4");
         profileUsername.textContent = uname + ` ${dateHours}:${dateMinutes}`;
         profileUsername.classList.add("profile-username");
         messageContent.appendChild(profileUsername);
+
         const messageText = document.createElement("p");
         messageText.textContent = message;
         messageText.classList.add("message");
+        
         messageContent.appendChild(messageText);
         messageWrapper.appendChild(messageContent);
 
