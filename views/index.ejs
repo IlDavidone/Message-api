@@ -48,7 +48,7 @@
         const messageContent = document.createElement("div");
         messageContent.classList.add("message-content");
         const profileUsername = document.createElement("h4");
-        profileUsername.textContent = uname;
+        profileUsername.textContent = uname + ` ${dateHours}:${dateMinutes}`;
         profileUsername.classList.add("profile-username");
         messageContent.appendChild(profileUsername);
         const messageText = document.createElement("p");
