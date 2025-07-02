@@ -1,0 +1,86 @@
+General Database Structure (Non Relational - MongoDB => Mongoose (ODM)):
+
+    User {
+        _id,
+        username,
+        email,
+        passwordSalt (10 Rounds),
+        isAdmin,
+        verificationState,
+        creationDate,
+        IP,
+    }
+
+    Banned Accounts {
+        _id,
+        username,
+        banDate,
+        banExpire,
+        isPermanent
+    }
+
+    Banned IPs {
+        _id,
+        IP,
+        banDate,
+        banExpire,
+        isPermanent
+    }
+
+    Settings {
+        _id,
+        username,
+        --various settings to be defined (To take alongside browser cookies) 
+    }
+
+    ChatRoom {
+        _id,
+        name,
+        isPublic,
+        publicLink,
+        partecipantsUsernames [], 
+        partecipantsIDs [],
+        partecipantsIPs [],
+        founder, 
+        owner,
+        admins [],
+        creationDate,
+        --various settings to be defined
+    }
+
+    Channel {
+        _id,
+        name,
+        forAdmin,
+        creationDate,
+        --various settings to be defined
+    }
+
+    Messages //(Principal Payload) {
+        _id,
+        sender,
+        toChatRoom (Boolean)
+            True: Recipient = Channel _id
+            False: Recipient = User _id
+        content,
+        emitDate,
+    }
+
+    Verification {
+        _id, 
+        forUser (User _id),
+        OtpSalt (10 Rounds),
+        requestDate,
+        requestExpiration
+    }
+
+    Session {
+        Cookie {
+            path, 
+            expirationDate,
+            originalMaxAge,
+            httpOnly
+        },
+        passport: user _id
+    }
+
