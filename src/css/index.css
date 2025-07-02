@@ -78,3 +78,14 @@ p {
 .message {
   text-wrap: wrap;
 }
+
+.username-date-wrapper {
+  display: flex;
+  align-items: baseline;
+  gap: max(1vh, 10px);
+}
+
+.message-date {
+  color: #777777;
+  font-size: 0.8rem;
+}

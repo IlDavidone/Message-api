@@ -33,8 +33,16 @@
 
       socket.on("message", (uname, message) => {
         const date = new Date();
-        const dateHours = date.getHours();
-        const dateMinutes = date.getMinutes();
+        let dateHours = date.getHours();
+        let dateMinutes = date.getMinutes();
+        for(let i = 0; i < 10; i++) {
+          if(i == dateMinutes) {
+            dateMinutes = "0" + dateMinutes;
+          }
+          if(i == dateHours) {
+            dateHours = "0" + dateHours;
+          }
+        }
 
         const body = document.querySelector(".messages-body");
         const messageWrapper = document.createElement("div");
@@ -51,10 +59,17 @@
 
         const messageContent = document.createElement("div");
         messageContent.classList.add("message-content");
+        const usernameDateWrapper = document.createElement("div");
+        usernameDateWrapper.classList.add("username-date-wrapper");
+        messageContent.appendChild(usernameDateWrapper)
         const profileUsername = document.createElement("h4");
-        profileUsername.textContent = uname + ` ${dateHours}:${dateMinutes}`;
+        profileUsername.textContent = uname;
         profileUsername.classList.add("profile-username");
-        messageContent.appendChild(profileUsername);
+        usernameDateWrapper.appendChild(profileUsername);
+        const messageDate = document.createElement("p");
+        messageDate.textContent = `${dateHours}:${dateMinutes}`;
+        messageDate.classList.add("message-date");
+        usernameDateWrapper.appendChild(messageDate);
 
         const messageText = document.createElement("p");
         messageText.textContent = message;
