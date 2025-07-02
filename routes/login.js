@@ -53,8 +53,10 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-router.get("/chat", (req, res) => {
-    res.render("index", { username: req.user.username });
+router.get("/chat", isAuth, (req, res) => {
+  console.log(req.session);
+  console.log(req.user);
+  res.render("index", { username: req.user.username });
 });
 
 router.get("/", (req, res, next) => {
@@ -71,8 +73,13 @@ router.get("/register", isNotAuth, (req, res, next) => {
   res.render("register");
 });
 
-router.get("tv.mp3", (req, res, next) => {
-  
-})
+router.get("/logout", isAuth, (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/login");
+  });
+});
 
 module.exports = router;

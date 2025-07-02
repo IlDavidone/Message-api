@@ -37,11 +37,6 @@ const sessionMiddleware = session({
     }
 });
 
-app.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*'); // Or a specific origin
-      next();
-    });
-
 app.use(sessionMiddleware);
 io.use(sharedSession(sessionMiddleware, { autoSave: true }));
 
@@ -56,6 +51,16 @@ app.use("/", router);
 
 io.on('connection', (socket) => {
     console.log("A user connected!");
+    socket.on('login', function(user) {
+        socket.handshake.session.user = user;
+        socket.handshake.session.save();
+    });
+    socket.on('logout', function(userdata) {
+        if (socket.handshake.session.user) {
+            delete socket.handshake.session.user;
+            socket.handshake.session.save();
+        }
+    });
     socket.on('message', (uname, message) => {
         io.emit('message', uname, message);
     });

@@ -1,5 +1,5 @@
 module.exports.isAuth = (req, res, next) => {
-    if (req.session.user) {
+    if (req.user) {
         next();
     } else {
         res.redirect("/");
@@ -7,7 +7,7 @@ module.exports.isAuth = (req, res, next) => {
 }
 
 module.exports.isNotAuth = (req, res, next) => {
-    if (req.session.user) {
+    if (req.user) {
         res.redirect("/chat");
     } else {
         next();
