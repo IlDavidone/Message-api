@@ -1,86 +1,98 @@
 General Database Structure (Non Relational - MongoDB => Mongoose (ODM)):
 
     User {
-        _id,
-        username,
-        email,
+        _id (String, Incremental),
+        username (String, Max 20 Chars),
+        email (String),
         passwordSalt (10 Rounds),
-        isAdmin,
-        verificationState,
-        creationDate,
-        IP,
+        isAdmin (Boolean),
+        verificationState (Boolean),
+        creationDate (Date),
+        IP (String),
     }
 
     Banned Accounts {
-        _id,
-        username,
-        banDate,
-        banExpire,
-        isPermanent
+        _id (Unique, Incremental),
+        userId (String, Relation => User._id),
+        username (Relation => User.username),
+        banDate (Date),
+        banExpire (Date),
+        isPermanent (Boolean, Default: False)
     }
 
     Banned IPs {
-        _id,
-        IP,
-        banDate,
-        banExpire,
-        isPermanent
+        _id (Unique, Incremental),
+        IP (String, Relation => User.IP),
+        banDate (Date),
+        banExpire (Date),
+        isPermanent (Boolean, Default: False)
     }
 
     Settings {
-        _id,
-        username,
-        --various settings to be defined (To take alongside browser cookies) 
+        _id (Unique, Incremental),
+        userId (String, Relation => User._id)
+        username (String, Relation => User.username),
+        --various settings to be defined (To take alongside browser cookies, not as a total replacement) 
     }
 
     ChatRoom {
-        _id,
-        name,
-        isPublic,
-        publicLink,
-        partecipantsUsernames [], 
-        partecipantsIDs [],
-        partecipantsIPs [],
-        founder, 
-        owner,
-        admins [],
-        creationDate,
+        _id (Unique, Incremental),
+        name (String),
+        isPublic (Boolean, Default: False),
+        publicLink (String),
+        partecipantsUsernames [] (Strings, Relation => User.username), 
+        partecipantsIDs [] (Strings, Relation => User._id),
+        partecipantsIPs [] (Strings, Relation => User.IP),
+        founder (String, Relation => User._id && User.username), 
+        owner (String, Relation => User._id && User.username),
+        admins [] (Strings, Relation => User._id && User.username),
+        creationDate (Date),
         --various settings to be defined
     }
 
     Channel {
-        _id,
-        name,
-        forAdmin,
-        creationDate,
+        _id (Unique, Incremental),
+        chatRoomId (String, Relation => chatRoom._id)
+        name (String),
+        forAdmin (Boolean, Default: False),
+        creationDate (Date),
         --various settings to be defined
     }
 
     Messages //(Principal Payload) {
-        _id,
-        sender,
+        _id (Unique, Incremental),
+        sender (String, Relation => User._id),
         toChatRoom (Boolean)
             True: Recipient = Channel _id
             False: Recipient = User _id
-        content,
-        emitDate,
+        content (String || Media),
+        emitDate (Date),
     }
 
     Verification {
-        _id, 
-        forUser (User _id),
-        OtpSalt (10 Rounds),
-        requestDate,
-        requestExpiration
+        _id (Unique, Incremental), 
+        forUser (String, Relation => User._id),
+        OtpSalt (String, Unique, 10 Rounds),
+        requestDate (Date),
+        requestExpiration (Date)
     }
 
     Session {
         Cookie {
-            path, 
-            expirationDate,
-            originalMaxAge,
-            httpOnly
+            path (String), 
+            expirationDate (Date),
+            originalMaxAge (Integer),
+            httpOnly (Boolean)
         },
-        passport: user _id
+        passport: (String, Relation => User._id)
     }
+    
+    Invitation {
+        _id (Unique, Incremental),
+        chatRoom (String, Relation => chatRoom._id,
+        creator (String, Relation => User._id),
+        creationDate (Date),
+        expirationDate (Date),
+        originalMaxAge (Date, Hours)
+        }
 
