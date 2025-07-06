@@ -40,7 +40,7 @@ const sessionMiddleware = session({
 app.use(sessionMiddleware);
 io.use(sharedSession(sessionMiddleware, { autoSave: true }));
 
-app.use("/", router);
+app.use("/api/v1", router);
 
 io.on('connection', (socket) => {
     console.log("A user connected!");

@@ -11,8 +11,9 @@ const connection = mongoose.createConnection(dbConnectionString, {
 
 const userSchema = new mongoose.Schema({
     username: String, 
-    hash: String,
-    salt: String,
+    email: String,
+    passwordSalt: String,
+    passwordHash: String,
     admin: Boolean,
     verification: {type: Boolean, default: false},
     creationDate: Date,

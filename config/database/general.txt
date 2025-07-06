@@ -96,3 +96,6 @@ General Database Structure (Non Relational - MongoDB => Mongoose (ODM)):
         originalMaxAge (Date, Hours)
         }
 
+
+Available API routes:
+    Authentication: ...
