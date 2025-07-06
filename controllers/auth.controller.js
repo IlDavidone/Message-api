@@ -5,8 +5,9 @@ const connection = require('../config/database/schemas');
 const User = connection.models.User;
 const crypto = require("crypto");
 const generatePassword = require("../controllers/passwordUtils").generatePassword;
+const verifyPassword = require("../controllers/passwordUtils").validPassword;
 
-export const signup =  async (req, res) => {
+export const signup = async (req, res) => {
     const {  username, email, password } = req.body;
     try {
         if (!username | !email | !password) {
@@ -23,14 +24,13 @@ export const signup =  async (req, res) => {
             return res.status(400).json({message: "The provided email is already registered"});
         }
 
-        const saltedPassword = generatePassword(password).salt;
-        const hashedPassword = generatePassword(password).hash;
+        const {salt, hash} = generatePassword(password);
 
         const userInsertion = new User({
             username,
             email,
-            passwordSalt: saltedPassword,
-            passwordHash: hashedPassword,
+            passwordSalt: salt,
+            passwordHash: hash,
             admin: false,
             verification: false,
             creationDate: new Date()
@@ -44,8 +44,6 @@ export const signup =  async (req, res) => {
                 id: userInsertion._id,
                 username: userInsertion.username,
                 email: userInsertion.email,
-                passwordSalt: userInsertion.passwordSalt,
-                passwordHash: userInsertion.passwordHash,
                 admin: userInsertion.admin,
                 verification: userInsertion.verification,
                 creationDate: userInsertion.creationDate
@@ -55,7 +53,58 @@ export const signup =  async (req, res) => {
             res.status(400).json({message: "Invalid user data"});
         }
     } catch (err) {
-        console.log("Error in signup process", err.message);
+        console.log("An error occurred during signup process", err.message);
         res.status(500).json({message: "Internal server error"});
     }
 } 
+
+export const signin = async (req, res) => {
+    try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({message: "Missing one or more required fields"});
+    }
+
+    if (password.length < 8) {
+        return res.status(400).json({message: "Password must be 8 characters long"});
+    }
+
+    const user = await User.findOne({email: email});
+
+    if (!user) {
+        return res.status(404).json({message: "Invalid credentials submitted"});
+    }
+
+    const passwordVerification = verifyPassword(password, user.passwordHash, user.passwordSalt);
+
+    if (!passwordVerification) {
+        return res.status(400).json({message: "Invalid password submitted"});
+    }
+
+    generateToken(user._id, res);
+
+    res.status(200).json({
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                admin: user.admin,
+                verification: user.verification,
+                creationDate: user.creationDate
+            });
+        }
+        catch(err) {
+            console.log("An error occurred during signin process", err.message);
+            res.status(500).json({message: "Internal server error"});
+        }
+}
+
+export const logout = (req, res) => {
+    try {
+    res.cookie("jwt", "", {maxAge: 0});
+    res.status(200).json({message: "Logged out successfully"});
+  } catch (err) {
+    console.log("An error occurred while logging out:", err.message);
+    res.status(500).json({message: "Internal server error"});
+  }
+}

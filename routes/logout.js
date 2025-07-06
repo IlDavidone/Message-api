@@ -1,14 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const isAuth = require("../middleware/auth").isAuth;
+const { logout } = require("../controllers/auth.controller");
 
-// router.get("/logout", isAuth, (req, res, next) => {
-//   req.logout(function (err) {
-//     if (err) {
-//       return next(err);
-//     }
-//     res.redirect("/login");
-//   });
-// });
+router.get("/logout", (req, res, next) => {
+  logout(req, res);
+});
 
 module.exports = router;
