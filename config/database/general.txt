@@ -89,7 +89,7 @@ General Database Structure (Non Relational - MongoDB => Mongoose (ODM)):
     
     Invitation {
         _id (Unique, Incremental),
-        chatRoom (String, Relation => chatRoom._id,
+        chatRoom (String, Relation => chatRoom._id),
         creator (String, Relation => User._id),
         creationDate (Date),
         expirationDate (Date),
