@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const isAuth = require("../controllers/auth").isAuth;
+const isAuth = require("../middleware/auth").isAuth;
 
 router.get("/logout", isAuth, (req, res, next) => {
   req.logout(function (err) {

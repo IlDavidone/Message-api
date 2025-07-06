@@ -12,14 +12,14 @@ const session = require('express-session');
 const mongoose = require("mongoose");
 const connection = require("./config/database/schemas");
 const crypto = require("crypto");
-const passport = require("passport");
+const cookieParser = require("cookie-parser");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(__dirname + '/src'));
-app.set("view engine", "ejs");
 
 const MongoStore = require('connect-mongo')(session);
 
@@ -39,13 +39,6 @@ const sessionMiddleware = session({
 
 app.use(sessionMiddleware);
 io.use(sharedSession(sessionMiddleware, { autoSave: true }));
-
-require('./config/authentication/passport');
-
-console.log("Initializing passport...");
-app.use(passport.initialize());
-app.use(passport.session());
-console.log("Done! Passport initialized.");
 
 app.use("/", router);
 

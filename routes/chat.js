@@ -3,9 +3,9 @@ const router = express.Router();
 const passport = require("passport");
 const connection = require("../config/database/schemas");
 const User = connection.models.User;
-const isAuth = require("../controllers/auth").isAuth;
-const isNotAuth = require("../controllers/auth").isNotAuth;
-const isAdmin = require("../controllers/auth").isAdmin;
+const isAuth = require("../middleware/auth").isAuth;
+const isNotAuth = require("../middleware/auth").isNotAuth;
+const isAdmin = require("../middleware/auth").isAdmin;
 
 require('dotenv').config();
 
