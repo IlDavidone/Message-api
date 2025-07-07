@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../config/database/users");
-const { signin } = require("../controllers/authenticationUtils");
+const { signup } = require("../controllers/authenticationUtils");
 
 require('dotenv').config();
 

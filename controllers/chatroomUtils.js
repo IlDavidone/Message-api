@@ -72,7 +72,9 @@ export const deleteChatroom = async (req, res) => {
     const chatroomName = req.params.name;
 
     if (!chatroomName) {
-      return res.status(400).json({ message: "Provide a valid chatroom name" });
+      return res
+        .status(400)
+        .json({ message: "The provided chatroom name is invalid" });
     }
 
     const existingChatroom = await Chatroom.findOne({ name: chatroomName });
@@ -97,5 +99,78 @@ export const deleteChatroom = async (req, res) => {
       err.message
     );
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updateChatroom = async (req, res) => {
+  try {
+    const chatroomName = req.params.name;
+    const { name, isPublic, owner } = req.body;
+
+    if (!chatroomName) {
+      return res
+        .status(400)
+        .json({ message: "The provided chatroom name is invalid" });
+    }
+
+    let chatroomProperties = await Chatroom.findOne({ name: chatroomName });
+
+    if (!chatroomProperties) {
+      return res
+        .status(404)
+        .json({ message: `No chatroom with the name ${chatroomName} found` });
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "Invalid token credentials, please log in again" });
+    }
+
+    const checkIfUserIsAdmin = chatroomProperties.admins.find(
+      (admin) => admin.id == user._id
+    );
+
+    if (checkIfUserIsAdmin === undefined) {
+      return res
+        .status(401)
+        .json({
+          message:
+            "You are not authorized to update this chatroom informations",
+        });
+    }
+
+    const checkIfNameExists = await Chatroom.findOne({ name: name });
+
+    if (!checkIfNameExists) {
+      chatroomProperties.name = name;
+    }
+
+    if (isPublic) {
+      chatroomProperties.isPublic = isPublic;
+    }
+
+    const ownerId = await User.findOne({ name: owner });
+
+    if (ownerId) {
+      chatroomProperties.owner = ownerId._id;
+    }
+
+    const updatedChatroom = await Chatroom.findByIdAndUpdate(
+      chatroomProperties._id,
+      {
+        name: chatroomProperties.name,
+        isPublic: chatroomProperties.isPublic,
+        owner: chatroomProperties.owner,
+      },
+      { new: true }
+    );
+
+    res.status(200).json(updatedChatroom);
+  } catch (err) {
+    console.log("An error occurred while updating a chatroom: ", err.message);
+    res.status(500).json({message: "Internal server error"});
   }
 };

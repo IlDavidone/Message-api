@@ -21,10 +21,18 @@ export const signup = async (req, res) => {
             return res.status(400).json({message: "The password is too short (Min. 8 characters)"});
         }
 
-        const user = await User.findOne({email: email});
+        const userEmail = await User.findOne({email: email});
 
-        if (user) {
+        if (userEmail) {
             return res.status(400).json({message: "The provided email is already registered"});
+        }
+
+        const userName = await User.exists({ username: { '$regex': username, $options: 'i' } });
+
+        console.log(userName);
+
+        if (userName !== null) {
+            return res.status(400).json({message: "The selected username already exists"});
         }
 
         const {salt, hash} = generatePassword(password);

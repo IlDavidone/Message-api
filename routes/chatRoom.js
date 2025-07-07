@@ -5,6 +5,7 @@ const { authenticatedRoute } = require("../middleware/auth");
 const {
   createChatroom,
   deleteChatroom,
+  updateChatroom,
 } = require("../controllers/chatroomUtils");
 
 router.post(
@@ -20,6 +21,14 @@ router.delete(
   authenticatedRoute,
   async (req, res, next) => {
     deleteChatroom(req, res);
+  }
+);
+
+router.patch(
+  "/chatroom/update/:name",
+  authenticatedRoute,
+  async (req, res, next) => {
+    updateChatroom(req, res);
   }
 );
 
