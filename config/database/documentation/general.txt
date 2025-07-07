@@ -76,16 +76,6 @@ General Database Structure (Non Relational - MongoDB => Mongoose (ODM)):
         requestDate (Date),
         requestExpiration (Date)
     }
-
-    Session {
-        Cookie {
-            path (String), 
-            expirationDate (Date),
-            originalMaxAge (Integer),
-            httpOnly (Boolean)
-        },
-        passport: (String, Relation => User._id)
-    }
     
     Invitation {
         _id (Unique, Incremental),

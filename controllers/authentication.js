@@ -1,7 +1,7 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const { generateToken } = require("../config/authentication/jwt");
-const User = require("../config/database/schemas");
+const User = require("../config/database/users");
 const crypto = require("crypto");
 const generatePassword = require("../controllers/passwordUtils").generatePassword;
 const verifyPassword = require("../controllers/passwordUtils").validPassword;

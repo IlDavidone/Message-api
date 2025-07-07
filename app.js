@@ -10,7 +10,7 @@ const io = socketio(server, {
 });
 const session = require('express-session');
 const mongoose = require("mongoose");
-const connection = require("./config/database/schemas");
+const connection = require("./config/database/users");
 const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
 require('dotenv').config();

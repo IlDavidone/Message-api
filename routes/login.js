@@ -1,9 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../config/database/schemas");
-const isAuth = require("../middleware/auth").isAuth;
-const isNotAuth = require("../middleware/auth").isNotAuth;
-const isAdmin = require("../middleware/auth").isAdmin;
+const User = require("../config/database/users");
 const { signin } = require("../controllers/authentication");
 
 require('dotenv').config();

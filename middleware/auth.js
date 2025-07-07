@@ -1,7 +1,7 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const jwt = require("jsonwebtoken");
-const User = require("../config/database/schemas");
+const User = require("../config/database/users");
 
 export const authenticatedRoute = async (req, res, next) => {
     try {
