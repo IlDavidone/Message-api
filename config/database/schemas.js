@@ -19,6 +19,4 @@ const userSchema = new mongoose.Schema({
     creationDate: Date,
 });
 
-const User = connection.model('User', userSchema);
-
-module.exports = connection;
+module.exports = mongoose.model("User", userSchema);

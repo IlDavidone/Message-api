@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const generatePassword = require("../controllers/passwordUtils").generatePassword;
-const connection = require("../config/database/schemas");
-const User = connection.models.User;
+const User = require("../config/database/schemas");
 const isNotAuth = require("../middleware/auth").isNotAuth;
-const { signup } = require("../controllers/auth.controller");
+const { signup } = require("../controllers/authentication");
 
 require('dotenv').config();
 

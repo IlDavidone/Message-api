@@ -1,8 +1,7 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const { generateToken } = require("../config/authentication/jwt");
-const connection = require('../config/database/schemas');
-const User = connection.models.User;
+const User = require("../config/database/schemas");
 const crypto = require("crypto");
 const generatePassword = require("../controllers/passwordUtils").generatePassword;
 const verifyPassword = require("../controllers/passwordUtils").validPassword;
@@ -10,6 +9,10 @@ const verifyPassword = require("../controllers/passwordUtils").validPassword;
 export const signup = async (req, res) => {
     const {  username, email, password } = req.body;
     try {
+        if (req.cookies.jwt) {
+            return res.status(400).json({message: "User is already signed in"});
+        }
+
         if (!username | !email | !password) {
             return res.status(400).json({message: "Missing one or more required fields"});
         }
@@ -61,6 +64,10 @@ export const signup = async (req, res) => {
 export const signin = async (req, res) => {
     try {
     const { email, password } = req.body;
+
+    if (req.cookies.jwt) {
+        return res.status(400).json({message: "User is already signed in"});
+    }
 
     if (!email || !password) {
         return res.status(400).json({message: "Missing one or more required fields"});
