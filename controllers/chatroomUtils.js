@@ -279,8 +279,6 @@ export const addAdminToChatroom = async (req, res) => {
       (admin) => admin.username.toLowerCase() === name.toLowerCase()
     );
 
-    console.log(checkIfAdminExists);
-
     if (checkIfAdminExists != undefined) {
       return res
         .status(400)
@@ -434,7 +432,7 @@ export const sendPartecipantInvitation = async (req, res) => {
     }
 
     const invitationInsertion = new Invitation({
-      chatroom: existingChatroom._id,
+      chatroomId: existingChatroom._id,
       creator: req.user._id,
       recipient: existingUser._id,
       accepted: false,

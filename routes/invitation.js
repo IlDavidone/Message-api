@@ -2,12 +2,16 @@ const express = require("express");
 const router = express.Router();
 const { authenticatedRoute } = require("../middleware/auth");
 const { sendPartecipantInvitation } = require("../controllers/chatroomUtils");
-const { fetchInvitations } = require("../controllers/invitationUtils"); 
+const { fetchInvitations, acceptInvitation } = require("../controllers/invitationUtils"); 
 
 require('dotenv').config();
 
 router.post("/invitations/send/:name", authenticatedRoute, async (req, res, next) => {
     sendPartecipantInvitation(req, res);
+});
+
+router.patch("/invitations/accept/:id", authenticatedRoute, async (req, res, next) => {
+    acceptInvitation(req, res);
 })
 
 router.get("/invitations", authenticatedRoute, async (req, res, next) => {

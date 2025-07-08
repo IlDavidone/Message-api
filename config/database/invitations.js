@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const invitationSchema = new mongoose.Schema({
-    chatroom: {
+    chatroomId: {
         type: String,
         required: true
     },
