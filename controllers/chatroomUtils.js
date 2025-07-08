@@ -3,6 +3,36 @@ const require = createRequire(import.meta.url);
 const User = require("../config/database/users");
 const Chatroom = require("../config/database/chatrooms");
 
+export const getChatroomInformations = async (req, res) => {
+  try {
+    const chatroomName = req.params.name;
+
+    if (!chatroomName) {
+      return res.status(400).json({ message: "Provide a valid chatroom name" });
+    }
+
+    const existingChatroom = await Chatroom.findOne({ name: { '$regex': chatroomName, $options: 'i' } });
+
+    if (!existingChatroom) {
+      return res.status(404).json({message: `Chatroom with the name ${chatroomName} not found`});
+    }
+
+    res.status(200).json({
+      name: existingChatroom.name,
+      isPublic: existingChatroom.isPublic,
+      partecipants: existingChatroom.partecipants,
+      creator: existingChatroom.creator,
+      owner: existingChatroom.owner,
+      admins: existingChatroom.admins,
+      creationDate: existingChatroom.creationDate,
+      updateDate: existingChatroom.updateDate
+    });
+  } catch (err) {
+    console.log("An error occurred while getting a chatroom informations: ", err.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 export const createChatroom = async (req, res) => {
   try {
     const chatroomName = req.params.name;
@@ -11,7 +41,7 @@ export const createChatroom = async (req, res) => {
       return res.status(400).json({ message: "Provide a valid chatroom name" });
     }
 
-    const existingChatroom = await Chatroom.findOne({ name: chatroomName });
+    const existingChatroom = await Chatroom.findOne({ name: { '$regex': chatroomName, $options: 'i' } });
 
     if (existingChatroom) {
       return res.status(400).json({ message: "Chatroom name already taken" });
@@ -77,13 +107,24 @@ export const deleteChatroom = async (req, res) => {
         .json({ message: "The provided chatroom name is invalid" });
     }
 
-    const existingChatroom = await Chatroom.findOne({ name: chatroomName });
+    const existingChatroom = await Chatroom.findOne({ name: { '$regex': chatroomName, $options: 'i' } });
 
     if (!existingChatroom) {
       return res.status(404).json({ message: "Chatroom not found" });
     }
 
-    Chatroom.deleteOne({ name: chatroomName })
+    const user = await User.findById(req.user._id);
+
+    if (existingChatroom.owner != user._id)  {
+      return res
+        .status(401)
+        .json({
+          message:
+            "You are not authorized to delete this chatroom",
+        });
+    }
+
+    Chatroom.deleteOne({ name: { '$regex': chatroomName, $options: 'i' } })
       .then(console.log(`${chatroomName} deleted`))
       .catch((err) => {
         console.log(
@@ -113,7 +154,7 @@ export const updateChatroom = async (req, res) => {
         .json({ message: "The provided chatroom name is invalid" });
     }
 
-    let chatroomProperties = await Chatroom.findOne({ name: chatroomName });
+    let chatroomProperties = await Chatroom.findOne({ name: { '$regex': chatroomName, $options: 'i' } });
 
     if (!chatroomProperties) {
       return res
@@ -142,7 +183,7 @@ export const updateChatroom = async (req, res) => {
         });
     }
 
-    const checkIfNameExists = await Chatroom.findOne({ name: name });
+    const checkIfNameExists = await Chatroom.findOne({ name: { '$regex': name, $options: 'i' } });
 
     if (!checkIfNameExists) {
       chatroomProperties.name = name;
@@ -152,10 +193,11 @@ export const updateChatroom = async (req, res) => {
       chatroomProperties.isPublic = isPublic;
     }
 
-    const ownerId = await User.findOne({ name: owner });
-
-    if (ownerId) {
-      chatroomProperties.owner = ownerId._id;
+    if (owner) {
+      const ownerId = await User.findOne({ name: { '$regex': owner, $options: 'i' } });
+        if (ownerId) {
+          chatroomProperties.owner = ownerId._id;
+        }
     }
 
     const updatedChatroom = await Chatroom.findByIdAndUpdate(
@@ -164,6 +206,7 @@ export const updateChatroom = async (req, res) => {
         name: chatroomProperties.name,
         isPublic: chatroomProperties.isPublic,
         owner: chatroomProperties.owner,
+        updateDate: Date.now()
       },
       { new: true }
     );
@@ -174,3 +217,14 @@ export const updateChatroom = async (req, res) => {
     res.status(500).json({message: "Internal server error"});
   }
 };
+
+export const addAdminToChatroom = async (req, res) => {
+  try {
+    const name = req.body;
+    const chatroomName = req.params.name;
+
+    const existingUser = await User.findOne({ name: { '$regex': name, $options: 'i' } })
+  } catch (err) {
+    
+  }
+}

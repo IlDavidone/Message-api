@@ -6,7 +6,12 @@ const {
   createChatroom,
   deleteChatroom,
   updateChatroom,
+  getChatroomInformations,
 } = require("../controllers/chatroomUtils");
+
+router.get("/chatroom/info/:name", authenticatedRoute, (req, res, next) => {
+  getChatroomInformations(req, res);
+});
 
 router.post(
   "/chatroom/create/:name",

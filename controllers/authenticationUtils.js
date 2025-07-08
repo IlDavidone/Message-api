@@ -29,8 +29,6 @@ export const signup = async (req, res) => {
 
         const userName = await User.exists({ username: { '$regex': username, $options: 'i' } });
 
-        console.log(userName);
-
         if (userName !== null) {
             return res.status(400).json({message: "The selected username already exists"});
         }
