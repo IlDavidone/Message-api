@@ -3,6 +3,7 @@ const loginRouter = require('./login');
 const registrationRouter = require('./registration')
 const logoutRouter = require('./logout');
 const chatroomRouter = require('./chatroom');
+const invitationsRouter = require('./invitation');
 const main = express();
 
 //main route = http://domain/api/v1/...
@@ -12,5 +13,7 @@ main.use('/authentication', registrationRouter);
 main.use('/authentication', logoutRouter);
 
 main.use('/', chatroomRouter);
+
+main.use('/', invitationsRouter);
 
 module.exports = main;

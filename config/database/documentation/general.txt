@@ -79,6 +79,8 @@ General Database Structure (Non Relational - MongoDB => Mongoose (ODM)):
         _id (Unique, Incremental),
         chatRoom (String, Relation => chatRoom._id),
         creator (String, Relation => User._id),
+        recipient (String, Relation => User._id),
+        accepted (Boolean, Default: False),
         creationDate (Date),
         expirationDate (Date),
         originalMaxAge (Date, Hours)

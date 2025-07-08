@@ -2,6 +2,7 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const User = require("../config/database/users");
 const Chatroom = require("../config/database/chatrooms");
+const Invitation = require("../config/database/invitations");
 
 export const getChatroomInformations = async (req, res) => {
   try {
@@ -11,10 +12,14 @@ export const getChatroomInformations = async (req, res) => {
       return res.status(400).json({ message: "Provide a valid chatroom name" });
     }
 
-    const existingChatroom = await Chatroom.findOne({ name: { '$regex': chatroomName, $options: 'i' } });
+    const existingChatroom = await Chatroom.findOne({
+      name: { $regex: chatroomName, $options: "i" },
+    });
 
     if (!existingChatroom) {
-      return res.status(404).json({message: `Chatroom with the name ${chatroomName} not found`});
+      return res
+        .status(404)
+        .json({ message: `Chatroom with the name ${chatroomName} not found` });
     }
 
     res.status(200).json({
@@ -25,13 +30,16 @@ export const getChatroomInformations = async (req, res) => {
       owner: existingChatroom.owner,
       admins: existingChatroom.admins,
       creationDate: existingChatroom.creationDate,
-      updateDate: existingChatroom.updateDate
+      updateDate: existingChatroom.updateDate,
     });
   } catch (err) {
-    console.log("An error occurred while getting a chatroom informations: ", err.message);
+    console.log(
+      "An error occurred while getting a chatroom informations: ",
+      err.message
+    );
     res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 export const createChatroom = async (req, res) => {
   try {
@@ -41,7 +49,9 @@ export const createChatroom = async (req, res) => {
       return res.status(400).json({ message: "Provide a valid chatroom name" });
     }
 
-    const existingChatroom = await Chatroom.findOne({ name: { '$regex': chatroomName, $options: 'i' } });
+    const existingChatroom = await Chatroom.findOne({
+      name: { $regex: chatroomName, $options: "i" },
+    });
 
     if (existingChatroom) {
       return res.status(400).json({ message: "Chatroom name already taken" });
@@ -107,7 +117,9 @@ export const deleteChatroom = async (req, res) => {
         .json({ message: "The provided chatroom name is invalid" });
     }
 
-    const existingChatroom = await Chatroom.findOne({ name: { '$regex': chatroomName, $options: 'i' } });
+    const existingChatroom = await Chatroom.findOne({
+      name: { $regex: chatroomName, $options: "i" },
+    });
 
     if (!existingChatroom) {
       return res.status(404).json({ message: "Chatroom not found" });
@@ -115,16 +127,13 @@ export const deleteChatroom = async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    if (existingChatroom.owner != user._id)  {
-      return res
-        .status(401)
-        .json({
-          message:
-            "You are not authorized to delete this chatroom",
-        });
+    if (existingChatroom.owner != user._id) {
+      return res.status(401).json({
+        message: "You are not authorized to delete this chatroom",
+      });
     }
 
-    Chatroom.deleteOne({ name: { '$regex': chatroomName, $options: 'i' } })
+    Chatroom.deleteOne({ name: { $regex: chatroomName, $options: "i" } })
       .then(console.log(`${chatroomName} deleted`))
       .catch((err) => {
         console.log(
@@ -154,7 +163,9 @@ export const updateChatroom = async (req, res) => {
         .json({ message: "The provided chatroom name is invalid" });
     }
 
-    let chatroomProperties = await Chatroom.findOne({ name: { '$regex': chatroomName, $options: 'i' } });
+    let chatroomProperties = await Chatroom.findOne({
+      name: { $regex: chatroomName, $options: "i" },
+    });
 
     if (!chatroomProperties) {
       return res
@@ -175,15 +186,14 @@ export const updateChatroom = async (req, res) => {
     );
 
     if (checkIfUserIsAdmin === undefined) {
-      return res
-        .status(401)
-        .json({
-          message:
-            "You are not authorized to update this chatroom informations",
-        });
+      return res.status(401).json({
+        message: "You are not authorized to update this chatroom informations",
+      });
     }
 
-    const checkIfNameExists = await Chatroom.findOne({ name: { '$regex': name, $options: 'i' } });
+    const checkIfNameExists = await Chatroom.findOne({
+      name: { $regex: name, $options: "i" },
+    });
 
     if (!checkIfNameExists) {
       chatroomProperties.name = name;
@@ -194,10 +204,12 @@ export const updateChatroom = async (req, res) => {
     }
 
     if (owner) {
-      const ownerId = await User.findOne({ name: { '$regex': owner, $options: 'i' } });
-        if (ownerId) {
-          chatroomProperties.owner = ownerId._id;
-        }
+      const ownerId = await User.findOne({
+        name: { $regex: owner, $options: "i" },
+      });
+      if (ownerId) {
+        chatroomProperties.owner = ownerId._id;
+      }
     }
 
     const updatedChatroom = await Chatroom.findByIdAndUpdate(
@@ -206,7 +218,7 @@ export const updateChatroom = async (req, res) => {
         name: chatroomProperties.name,
         isPublic: chatroomProperties.isPublic,
         owner: chatroomProperties.owner,
-        updateDate: Date.now()
+        updateDate: Date.now(),
       },
       { new: true }
     );
@@ -214,7 +226,7 @@ export const updateChatroom = async (req, res) => {
     res.status(200).json(updatedChatroom);
   } catch (err) {
     console.log("An error occurred while updating a chatroom: ", err.message);
-    res.status(500).json({message: "Internal server error"});
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -224,112 +236,219 @@ export const addAdminToChatroom = async (req, res) => {
     const chatroomName = req.params.name;
 
     if (!name) {
-      return res.status(400).json({message: "The provided admin username is invalid"});
+      return res
+        .status(400)
+        .json({ message: "The provided admin username is invalid" });
     }
 
     if (!chatroomName) {
-      return res.status(400).json({message: "The provided chatroom name is invalid"});
+      return res
+        .status(400)
+        .json({ message: "The provided chatroom name is invalid" });
     }
 
-    const existingUser = await User.findOne({ username: { '$regex': name, $options: 'i' } })
-    
+    const existingUser = await User.findOne({
+      username: { $regex: name, $options: "i" },
+    });
+
     if (!existingUser) {
-      return res.status(404).json({message: `No entry found with ${name} name`});
+      return res
+        .status(404)
+        .json({ message: `No entry found with ${name} name` });
     }
 
-    const existingChatroom = await Chatroom.findOne({ name: {'$regex': chatroomName, $options: 'i'} });
+    const existingChatroom = await Chatroom.findOne({
+      name: { $regex: chatroomName, $options: "i" },
+    });
 
     if (!existingChatroom) {
-      return res.status(404).json({message: `No entry found with ${chatroomName} chatroom name`});
+      return res
+        .status(404)
+        .json({ message: `No entry found with ${chatroomName} chatroom name` });
     }
 
     if (existingChatroom.owner != req.user._id) {
-      return res
-        .status(401)
-        .json({
-          message:
-            "You are not authorized to add an admin to this chatroom",
-        });
+      return res.status(401).json({
+        message: "You are not authorized to add an admin to this chatroom",
+      });
     }
 
     let adminArray = existingChatroom.admins;
 
-    const checkIfAdminExists = adminArray.find((admin) => (admin.username).toLowerCase() === name.toLowerCase());
+    const checkIfAdminExists = adminArray.find(
+      (admin) => admin.username.toLowerCase() === name.toLowerCase()
+    );
 
     console.log(checkIfAdminExists);
 
-    if (checkIfAdminExists === undefined) {
-      return res.status(400).json({message: "The selected admin already exists"});
+    if (checkIfAdminExists != undefined) {
+      return res
+        .status(400)
+        .json({ message: "The selected admin already exists" });
+    }
+
+    let partecipantsArray = existingChatroom.partecipants;
+
+    const checkIfPartecipantExists = partecipantsArray.find(
+      (user) => user.username.toLowerCase() === name.toLowerCase()
+    );
+
+    if (checkIfPartecipantExists === undefined) {
+      return res
+        .status(400)
+        .json({
+          message: "The selected user isn't a partecipant of this chatroom",
+        });
     }
 
     adminArray.push({ id: existingUser._id, username: existingUser.username });
 
-    const updatedChatroom = await Chatroom.findByIdAndUpdate(existingChatroom._id, 
-      {admins: adminArray},
-      {new: true}
+    const updatedChatroom = await Chatroom.findByIdAndUpdate(
+      existingChatroom._id,
+      { admins: adminArray },
+      { new: true }
     );
 
-    res.status(200).json({updatedChatroom});
+    res.status(200).json({ updatedChatroom });
   } catch (err) {
-    console.log("An error occurred while adding an admin to a chatroom: ", err.message);
-    res.status(500).json({message: "Internal server error"});
+    console.log(
+      "An error occurred while adding an admin to a chatroom: ",
+      err.message
+    );
+    res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
-export const removeAdminInChatroom = async (req, res) =>  {
+export const removeAdminInChatroom = async (req, res) => {
   try {
     const { name } = req.body;
     const chatroomName = req.params.name;
 
     if (!name) {
-      return res.status(400).json({message: "The provided admin username is invalid"});
+      return res
+        .status(400)
+        .json({ message: "The provided admin username is invalid" });
     }
 
     if (!chatroomName) {
-      return res.status(400).json({message: "The provided chatroom name is invalid"});
+      return res
+        .status(400)
+        .json({ message: "The provided chatroom name is invalid" });
     }
 
-    const existingUser = await User.findOne({ username: { '$regex': name, $options: 'i' } })
-    
+    const existingUser = await User.findOne({
+      username: { $regex: name, $options: "i" },
+    });
+
     if (!existingUser) {
-      return res.status(404).json({message: `No entry found with ${name} name`});
+      return res
+        .status(404)
+        .json({ message: `No entry found with ${name} name` });
     }
 
-    const existingChatroom = await Chatroom.findOne({ name: {'$regex': chatroomName, $options: 'i'} });
+    const existingChatroom = await Chatroom.findOne({
+      name: { $regex: chatroomName, $options: "i" },
+    });
 
     if (!existingChatroom) {
-      return res.status(404).json({message: `No entry found with ${chatroomName} chatroom name`});
+      return res
+        .status(404)
+        .json({ message: `No entry found with ${chatroomName} chatroom name` });
     }
 
     if (existingChatroom.owner != req.user._id) {
-      return res
-        .status(401)
-        .json({
-          message:
-            "You are not authorized to remove an admin from this chatroom",
-        });
+      return res.status(401).json({
+        message: "You are not authorized to remove an admin from this chatroom",
+      });
     }
 
     let adminArray = existingChatroom.admins;
 
-    const checkIfAdminExists = adminArray.find((admin) => (admin.username).toLowerCase() === name.toLowerCase());
+    const checkIfAdminExists = adminArray.find(
+      (admin) => admin.username.toLowerCase() === name.toLowerCase()
+    );
 
-    if (checkIfAdminExists === undefined) {
-      return res.status(400).json({message: "The selected admin doesn't exist"});
+    if (checkIfAdminExists != undefined) {
+      return res
+        .status(400)
+        .json({ message: "The selected admin doesn't exist" });
     }
 
-    const updatedAdminArray = adminArray.filter((admin) => (admin.username).toLowerCase() != name.toLowerCase());
+    const updatedAdminArray = adminArray.filter(
+      (admin) => admin.username.toLowerCase() != name.toLowerCase()
+    );
 
     console.log(updatedAdminArray);
 
-    const updatedChatroom = await Chatroom.findByIdAndUpdate(existingChatroom._id, 
-      {admins: updatedAdminArray},
-      {new: true}
+    const updatedChatroom = await Chatroom.findByIdAndUpdate(
+      existingChatroom._id,
+      { admins: updatedAdminArray },
+      { new: true }
     );
 
-    res.status(200).json({updatedChatroom});
+    res.status(200).json({ updatedChatroom });
   } catch (err) {
-    console.log("An error occurred while removing an admin from a chatroom: ", err.message);
-    res.status(500).json({message: "Internal server error"});
+    console.log(
+      "An error occurred while removing an admin from a chatroom: ",
+      err.message
+    );
+    res.status(500).json({ message: "Internal server error" });
   }
-}
+};
+
+export const sendPartecipantInvitation = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const chatroomName = req.params.name;
+
+    if (!name) {
+      return res
+        .status(400)
+        .json({ message: "The provided username is invalid" });
+    }
+
+    if (!chatroomName) {
+      return res
+        .status(400)
+        .json({ message: "The provided chatroom name is invalid" });
+    }
+
+    const existingUser = await User.findOne({
+      username: { $regex: name, $options: "i" },
+    });
+
+    if (!existingUser) {
+      return res
+        .status(404)
+        .json({ message: `No entry found with ${name} name` });
+    }
+
+    const existingChatroom = await Chatroom.findOne({
+      name: { $regex: chatroomName, $options: "i" },
+    });
+
+    if (!existingChatroom) {
+      return res
+        .status(404)
+        .json({ message: `No entry found with ${chatroomName} chatroom name` });
+    }
+
+    const invitationInsertion = new Invitation({
+      chatroom: existingChatroom._id,
+      creator: req.user._id,
+      recipient: existingUser._id,
+      accepted: false,
+      creationDate: Date.now(),
+    });
+
+    if (!invitationInsertion) {
+      return res.status(400).json({ message: "Failed to send invitation" });
+    }
+
+    await invitationInsertion.save();
+    res.status(200).json(invitationInsertion);
+  } catch (err) {
+    console.log("An error occurred while sending an invitation: ", err.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
