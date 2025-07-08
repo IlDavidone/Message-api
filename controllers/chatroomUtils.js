@@ -252,11 +252,9 @@ export const addAdminToChatroom = async (req, res) => {
         });
     }
 
-    console.log("test");
-
     let adminArray = existingChatroom.admins;
 
-    const checkIfAdminExists = adminArray.find((admin) => admin.id === req.user._id);
+    const checkIfAdminExists = adminArray.find((admin) => (admin.username).toLowerCase() === name.toLowerCase());
 
     console.log(checkIfAdminExists);
 
@@ -268,6 +266,64 @@ export const addAdminToChatroom = async (req, res) => {
 
     const updatedChatroom = await Chatroom.findByIdAndUpdate(existingChatroom._id, 
       {admins: adminArray},
+      {new: true}
+    );
+
+    res.status(200).json({updatedChatroom});
+  } catch (err) {
+    console.log("An error occurred while adding an admin to a chatroom: ", err.message);
+    res.status(500).json({message: "Internal server error"});
+  }
+}
+
+export const removeAdminInChatroom = async (req, res) =>  {
+  try {
+    const { name } = req.body;
+    const chatroomName = req.params.name;
+
+    if (!name) {
+      return res.status(400).json({message: "The provided admin username is invalid"});
+    }
+
+    if (!chatroomName) {
+      return res.status(400).json({message: "The provided chatroom name is invalid"});
+    }
+
+    const existingUser = await User.findOne({ username: { '$regex': name, $options: 'i' } })
+    
+    if (!existingUser) {
+      return res.status(404).json({message: `No entry found with ${name} name`});
+    }
+
+    const existingChatroom = await Chatroom.findOne({ name: {'$regex': chatroomName, $options: 'i'} });
+
+    if (!existingChatroom) {
+      return res.status(404).json({message: `No entry found with ${chatroomName} chatroom name`});
+    }
+
+    if (existingChatroom.owner != req.user._id) {
+      return res
+        .status(401)
+        .json({
+          message:
+            "You are not authorized to remove an admin from this chatroom",
+        });
+    }
+
+    let adminArray = existingChatroom.admins;
+
+    const checkIfAdminExists = adminArray.find((admin) => (admin.username).toLowerCase() === name.toLowerCase());
+
+    if (checkIfAdminExists === undefined) {
+      return res.status(400).json({message: "The selected admin doesn't exist"});
+    }
+
+    const updatedAdminArray = adminArray.filter((admin) => (admin.username).toLowerCase() != name.toLowerCase());
+
+    console.log(updatedAdminArray);
+
+    const updatedChatroom = await Chatroom.findByIdAndUpdate(existingChatroom._id, 
+      {admins: updatedAdminArray},
       {new: true}
     );
 

@@ -8,6 +8,7 @@ const {
   updateChatroom,
   getChatroomInformations,
   addAdminToChatroom,
+  removeAdminInChatroom,
 } = require("../controllers/chatroomUtils");
 
 router.get("/chatroom/info/:name", authenticatedRoute, (req, res, next) => {
@@ -40,6 +41,10 @@ router.patch(
 
 router.post("/chatroom/admin/add/:name", authenticatedRoute, async (req, res, next) => {
   addAdminToChatroom(req, res);
+});
+
+router.delete("/chatroom/admin/remove/:name", authenticatedRoute, async (req, res, next) => {
+  removeAdminInChatroom(req, res);
 })
 
 module.exports = router;
