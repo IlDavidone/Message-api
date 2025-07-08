@@ -220,11 +220,60 @@ export const updateChatroom = async (req, res) => {
 
 export const addAdminToChatroom = async (req, res) => {
   try {
-    const name = req.body;
+    const { name } = req.body;
     const chatroomName = req.params.name;
 
-    const existingUser = await User.findOne({ name: { '$regex': name, $options: 'i' } })
-  } catch (err) {
+    if (!name) {
+      return res.status(400).json({message: "The provided admin username is invalid"});
+    }
+
+    if (!chatroomName) {
+      return res.status(400).json({message: "The provided chatroom name is invalid"});
+    }
+
+    const existingUser = await User.findOne({ username: { '$regex': name, $options: 'i' } })
     
+    if (!existingUser) {
+      return res.status(404).json({message: `No entry found with ${name} name`});
+    }
+
+    const existingChatroom = await Chatroom.findOne({ name: {'$regex': chatroomName, $options: 'i'} });
+
+    if (!existingChatroom) {
+      return res.status(404).json({message: `No entry found with ${chatroomName} chatroom name`});
+    }
+
+    if (existingChatroom.owner != req.user._id) {
+      return res
+        .status(401)
+        .json({
+          message:
+            "You are not authorized to add an admin to this chatroom",
+        });
+    }
+
+    console.log("test");
+
+    let adminArray = existingChatroom.admins;
+
+    const checkIfAdminExists = adminArray.find((admin) => admin.id === req.user._id);
+
+    console.log(checkIfAdminExists);
+
+    if (checkIfAdminExists === undefined) {
+      return res.status(400).json({message: "The selected admin already exists"});
+    }
+
+    adminArray.push({ id: existingUser._id, username: existingUser.username });
+
+    const updatedChatroom = await Chatroom.findByIdAndUpdate(existingChatroom._id, 
+      {admins: adminArray},
+      {new: true}
+    );
+
+    res.status(200).json({updatedChatroom});
+  } catch (err) {
+    console.log("An error occurred while adding an admin to a chatroom: ", err.message);
+    res.status(500).json({message: "Internal server error"});
   }
 }
