@@ -114,3 +114,39 @@ export const acceptInvitation = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const rejectInvitation = async (req, res) => {
+  try {
+    const invitationId = req.params.id;
+
+    if (!invitationId) {
+      return res.status(400).json({ message: "Provide a valid invitation id" });
+    }
+
+    const existingInvitation = await Invitation.findById(invitationId);
+
+    if (!existingInvitation) {
+      return res
+        .status(404)
+        .json({ message: "No invitation with provided id found" });
+    }
+
+    if (existingInvitation.recipient != req.user._id) {
+        return res.status(401).json({message: "you are not authorized to reject this invitations"});
+    }
+
+    if (existingInvitation.accepted === true) {
+      return res.status(403).json({ message: "Invitation already accepted" });
+    }
+
+    const updatedInvitation = await Invitation.findOneAndDelete(req.params.id);
+
+    res.status(200).json({ updatedInvitation });
+  } catch (err) {
+    console.log(
+      "An error occurred while accepting an invitation: ",
+      err.message
+    );
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
