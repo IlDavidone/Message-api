@@ -329,7 +329,7 @@ export const removeAdminInChatroom = async (req, res) =>  {
 
     res.status(200).json({updatedChatroom});
   } catch (err) {
-    console.log("An error occurred while adding an admin to a chatroom: ", err.message);
+    console.log("An error occurred while removing an admin from a chatroom: ", err.message);
     res.status(500).json({message: "Internal server error"});
   }
 }
