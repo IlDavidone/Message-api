@@ -292,11 +292,9 @@ export const addAdminToChatroom = async (req, res) => {
     );
 
     if (checkIfPartecipantExists === undefined) {
-      return res
-        .status(400)
-        .json({
-          message: "The selected user isn't a partecipant of this chatroom",
-        });
+      return res.status(400).json({
+        message: "The selected user isn't a partecipant of this chatroom",
+      });
     }
 
     adminArray.push({ id: existingUser._id, username: existingUser.username });

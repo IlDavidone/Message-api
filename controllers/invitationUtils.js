@@ -57,10 +57,12 @@ export const acceptInvitation = async (req, res) => {
     let partecipantsArray = existingChatroom.partecipants;
 
     const partecipantExists = partecipantsArray.find(
-      (partecipant) => partecipant.id === req.user._id
+      (partecipant) => partecipant.id == req.user._id
     );
 
-    if (partecipantExists != undefined) {
+    console.log(partecipantExists);
+
+    if (partecipantExists) {
       return res
         .status(400)
         .json({ message: "You are already a partecipant of this chatroom" });
