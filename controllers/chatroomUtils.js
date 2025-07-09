@@ -23,6 +23,7 @@ export const getChatroomInformations = async (req, res) => {
     }
 
     res.status(200).json({
+      _id: existingChatroom._id,
       name: existingChatroom.name,
       isPublic: existingChatroom.isPublic,
       partecipants: existingChatroom.partecipants,
