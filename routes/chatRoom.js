@@ -2,6 +2,7 @@ const User = require("../config/database/users");
 const express = require("express");
 const router = express.Router();
 const { authenticatedRoute } = require("../middleware/auth");
+const { chatroomAdminValidation } = require("../middleware/chatroomAdminValidation");
 const {
   createChatroom,
   deleteChatroom,
@@ -32,8 +33,9 @@ router.delete(
 );
 
 router.patch(
-  "/chatroom/update/:name",
+  "/chatroom/update/:id",
   authenticatedRoute,
+  chatroomAdminValidation,
   async (req, res, next) => {
     updateChatroom(req, res);
   }

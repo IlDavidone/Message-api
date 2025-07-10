@@ -20,21 +20,6 @@ export const getAllChatroomChannels = async (req, res) => {
         .json({ message: "No chatroom with provided id found" });
     }
 
-    const user = await User.findById(req.user._id);
-
-    const adminsArray = existingChatroom.admins;
-
-    const checkIfUserIsAdmin = adminsArray.find(
-      (admin) => admin.id == req.user._id
-    );
-
-    if (!checkIfUserIsAdmin) {
-      return res.status(401).json({
-        message:
-          "You are not authorized to fetch all channels - Permissions missing",
-      });
-    }
-
     const existingChannels = await Channel.find({ chatroomId: chatroomId });
 
     if (!existingChannels) {
@@ -115,19 +100,6 @@ export const createChannel = async (req, res) => {
       return res
         .status(404)
         .json({ message: "No chatroom with provided id found" });
-    }
-
-    const adminsArray = existingChatroom.admins;
-
-    const checkIfUserIsAdmin = adminsArray.find(
-      (admin) => admin.id == req.user._id
-    );
-
-    if (!checkIfUserIsAdmin) {
-      return res.status(401).json({
-        message:
-          "You are not authorized to create a channel - Permissions missing",
-      });
     }
 
     const channelInsertion = new Channel({

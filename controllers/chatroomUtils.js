@@ -174,24 +174,6 @@ export const updateChatroom = async (req, res) => {
         .json({ message: `No chatroom with the name ${chatroomName} found` });
     }
 
-    const user = await User.findById(req.user._id);
-
-    if (!user) {
-      return res
-        .status(404)
-        .json({ message: "Invalid token credentials, please log in again" });
-    }
-
-    const checkIfUserIsAdmin = chatroomProperties.admins.find(
-      (admin) => admin.id == user._id
-    );
-
-    if (checkIfUserIsAdmin === undefined) {
-      return res.status(401).json({
-        message: "You are not authorized to update this chatroom informations",
-      });
-    }
-
     const checkIfNameExists = await Chatroom.findOne({
       name: { $regex: name, $options: "i" },
     });

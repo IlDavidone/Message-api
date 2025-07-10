@@ -4,13 +4,14 @@ const Channel = require("../config/database/channels");
 const User = require("../config/database/users");
 const Chatroom = require("../config/database/chatrooms");
 const { authenticatedRoute } = require("../middleware/auth");
+const { chatroomAdminValidation } = require("../middleware/chatroomAdminValidation");
 const {
   createChannel,
   getAllChatroomChannels,
   getAllPublicChatroomChannels,
 } = require("../controllers/channelUtils");
 
-router.get("/channel/all/:id", authenticatedRoute, async (req, res, next) => {
+router.get("/channel/all/:id", authenticatedRoute, chatroomAdminValidation, async (req, res, next) => {
     getAllChatroomChannels(req, res);
 });
 
@@ -25,11 +26,12 @@ router.get(
 router.post(
   "/channel/create/:id/:name",
   authenticatedRoute,
+  chatroomAdminValidation,
   async (req, res, next) => {
     createChannel(req, res);
   }
 );
 
-router.delete("/channel/remove/:id/:name");
+// router.delete("/channel/remove/:id/:name");
 
 module.exports = router;
