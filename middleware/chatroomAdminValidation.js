@@ -12,7 +12,7 @@ export const chatroomAdminValidation = async (req, res, next) => {
       return res.status(400).json({ message: "Invalid chatroom id provided" });
     }
 
-    const existingChatroom = await Chatroom.findById(chatroomId);
+    let existingChatroom = await Chatroom.findById(chatroomId);
 
     if (!existingChatroom) {
       return res

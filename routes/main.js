@@ -5,6 +5,7 @@ const logoutRouter = require("./logout");
 const chatroomRouter = require("./chatroom");
 const invitationsRouter = require("./invitation");
 const channelRouter = require("./channel");
+const messageRouter = require("./message");
 const main = express();
 
 //main route = http://domain/api/v1/...
@@ -18,5 +19,7 @@ main.use("/", chatroomRouter);
 main.use("/", invitationsRouter);
 
 main.use("/", channelRouter);
+
+main.use("/", messageRouter);
 
 module.exports = main;

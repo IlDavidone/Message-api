@@ -172,7 +172,7 @@ export const updateChatroom = async (req, res) => {
         .json({ message: `No chatroom with the provided id found` });
     }
 
-    const checkIfNameExists = await Chatroom.findOne({
+    let checkIfNameExists = await Chatroom.findOne({
       name: { $regex: name, $options: "i" },
     });
 
