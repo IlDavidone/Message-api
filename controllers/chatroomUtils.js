@@ -155,23 +155,21 @@ export const deleteChatroom = async (req, res) => {
 
 export const updateChatroom = async (req, res) => {
   try {
-    const chatroomName = req.params.name;
+    const chatroomId = req.params.id;
     const { name, isPublic, owner } = req.body;
 
-    if (!chatroomName) {
+    if (!chatroomId) {
       return res
         .status(400)
-        .json({ message: "The provided chatroom name is invalid" });
+        .json({ message: "The provided chatroom id is invalid" });
     }
 
-    let chatroomProperties = await Chatroom.findOne({
-      name: { $regex: chatroomName, $options: "i" },
-    });
+    let chatroomProperties = await Chatroom.findById(chatroomId);
 
     if (!chatroomProperties) {
       return res
         .status(404)
-        .json({ message: `No chatroom with the name ${chatroomName} found` });
+        .json({ message: `No chatroom with the provided id found` });
     }
 
     const checkIfNameExists = await Chatroom.findOne({

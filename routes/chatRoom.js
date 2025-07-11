@@ -2,7 +2,9 @@ const User = require("../config/database/users");
 const express = require("express");
 const router = express.Router();
 const { authenticatedRoute } = require("../middleware/auth");
-const { chatroomAdminValidation } = require("../middleware/chatroomAdminValidation");
+const {
+  chatroomAdminValidation,
+} = require("../middleware/chatroomAdminValidation");
 const {
   createChatroom,
   deleteChatroom,
@@ -41,12 +43,20 @@ router.patch(
   }
 );
 
-router.post("/chatroom/admin/add/:name", authenticatedRoute, async (req, res, next) => {
-  addAdminToChatroom(req, res);
-});
+router.post(
+  "/chatroom/admin/add/:name",
+  authenticatedRoute,
+  async (req, res, next) => {
+    addAdminToChatroom(req, res);
+  }
+);
 
-router.delete("/chatroom/admin/remove/:name", authenticatedRoute, async (req, res, next) => {
-  removeAdminInChatroom(req, res);
-})
+router.delete(
+  "/chatroom/admin/remove/:name",
+  authenticatedRoute,
+  async (req, res, next) => {
+    removeAdminInChatroom(req, res);
+  }
+);
 
 module.exports = router;
