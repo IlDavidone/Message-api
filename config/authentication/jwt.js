@@ -1,8 +1,8 @@
-import { createRequire } from 'module';
+import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const jwt = require("jsonwebtoken");
 
-require('dotenv').config();
+require("dotenv").config();
 
 export const generateToken = (userId, res) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET_KEY, {

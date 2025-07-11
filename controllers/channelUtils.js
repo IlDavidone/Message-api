@@ -155,7 +155,7 @@ export const deleteChannel = async (req, res) => {
     }
 
     const existingChannel = await Channel.findOne({
-      name: { $regex: channelName, $options: "i" }
+      name: { $regex: channelName, $options: "i" },
     });
 
     if (!existingChannel) {
@@ -170,7 +170,10 @@ export const deleteChannel = async (req, res) => {
         console.log(`An error occurred while deleting ${channelName} channel`);
       });
 
-    res.status(200).json({message: "The channel has been deleted successfully!", existingChannel})
+    res.status(200).json({
+      message: "The channel has been deleted successfully!",
+      existingChannel,
+    });
   } catch (err) {
     console.log("An error occurred while deleting a channel: ", err.message);
     res.status(500).json({ message: "Internal server error" });
@@ -184,7 +187,9 @@ export const editChannel = async (req, res) => {
     const channel = req.params.name;
 
     if (!channelName && !forAdmin) {
-      return res.status(400).json({message: "Please choose one or more parameters to update"});
+      return res
+        .status(400)
+        .json({ message: "Please choose one or more parameters to update" });
     }
 
     if (!chatroomId) {
@@ -209,7 +214,7 @@ export const editChannel = async (req, res) => {
 
     const existingChannel = await Channel.findOne({
       chatroomId: chatroomId,
-      name: { $regex: `^${channel}$`, $options: "i" }
+      name: { $regex: `^${channel}$`, $options: "i" },
     });
 
     if (!existingChannel) {
@@ -226,20 +231,24 @@ export const editChannel = async (req, res) => {
       forAdmin = existingChannel.forAdmin;
     }
 
-    let updatedChannel = await Channel.findByIdAndUpdate(existingChannel._id, 
+    let updatedChannel = await Channel.findByIdAndUpdate(
+      existingChannel._id,
       {
         name: channelName,
         forAdmin: forAdmin,
-      }, {new: true}
+      },
+      { new: true }
     );
 
     if (!updatedChannel) {
-      return res.status(400).json({message: "Invalid channel parameters provided"});
+      return res
+        .status(400)
+        .json({ message: "Invalid channel parameters provided" });
     }
 
-    res.status(200).json({updatedChannel});
+    res.status(200).json({ updatedChannel });
   } catch (err) {
     console.log("An error occurred while editing a channel: ", err.message);
     res.status(500).json({ message: "Internal server error" });
   }
-}
+};

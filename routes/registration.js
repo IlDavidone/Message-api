@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require("../config/database/users");
 const { signup } = require("../controllers/authenticationUtils");
 
-require('dotenv').config();
+require("dotenv").config();
 
 router.post("/register", async (req, res, next) => {
   signup(req, res);

@@ -134,7 +134,9 @@ export const rejectInvitation = async (req, res) => {
     }
 
     if (existingInvitation.recipient != req.user._id) {
-        return res.status(401).json({message: "you are not authorized to reject this invitations"});
+      return res
+        .status(401)
+        .json({ message: "you are not authorized to reject this invitations" });
     }
 
     if (existingInvitation.accepted === true) {
