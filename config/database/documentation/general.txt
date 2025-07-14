@@ -50,7 +50,7 @@ General Database Structure (Non Relational - MongoDB => Mongoose (ODM)):
 
     Channel {
         _id (Unique, Incremental),
-        chatRoomId (String, Relation => chatRoom._id)
+        chatRoomId (String, Relation => chatRoom._id),
         name (String),
         forAdmin (Boolean, Default: False),
         creationDate (Date),
@@ -60,7 +60,7 @@ General Database Structure (Non Relational - MongoDB => Mongoose (ODM)):
     Messages //(Principal Payload) {
         _id (Unique, Incremental),
         sender (String, Relation => User._id),
-        toChatRoom (Boolean)
+        toChatRoom (Boolean),
             True: Recipient = Channel _id
             False: Recipient = User _id
         content (String || Media),

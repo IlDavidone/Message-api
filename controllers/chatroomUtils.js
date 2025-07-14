@@ -4,6 +4,30 @@ const User = require("../config/database/users");
 const Chatroom = require("../config/database/chatrooms");
 const Invitation = require("../config/database/invitations");
 
+export const getUserChatrooms = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    const userPartecipationsArray = user.partecipates;
+
+    let chatroomsArray = [];
+
+    for (let i = 0; i < userPartecipationsArray.length; i++) {
+      const chatroomId = await Chatroom.findById(
+        userPartecipationsArray[i].chatroomId
+      );
+      chatroomsArray.push(chatroomId);
+    }
+
+    res.status(200).json(chatroomsArray);
+  } catch (err) {
+    console.log(
+      "An error occurred while getting a chatroom informations: ",
+      err.message
+    );
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const getChatroomInformations = async (req, res) => {
   try {
     const chatroomName = req.params.name;

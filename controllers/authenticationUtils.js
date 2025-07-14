@@ -52,6 +52,7 @@ export const signup = async (req, res) => {
       passwordSalt: salt,
       passwordHash: hash,
       admin: false,
+      partecipates: [],
       verification: false,
       creationDate: new Date(),
     });

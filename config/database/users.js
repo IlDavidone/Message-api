@@ -9,6 +9,12 @@ const userSchema = new mongoose.Schema({
   passwordSalt: String,
   passwordHash: String,
   admin: Boolean,
+  partecipates: [
+    {
+      chatroomId: String,
+      chatroomName: String,
+    },
+  ],
   verification: { type: Boolean, default: false },
   creationDate: Date,
 });

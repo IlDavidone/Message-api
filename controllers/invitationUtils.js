@@ -76,6 +76,13 @@ export const acceptInvitation = async (req, res) => {
         .json({ message: "Invalid token provided - Sign-in again" });
     }
 
+    const userPartecipationsArray = user.partecipates;
+
+    userPartecipationsArray.push({
+      chatroomId: existingChatroom._id,
+      chatroomName: existingChatroom.name,
+    });
+
     partecipantsArray.push({ id: req.user._id, username: user.username });
 
     const updatedInvitation = await Invitation.findByIdAndUpdate(
@@ -107,7 +114,17 @@ export const acceptInvitation = async (req, res) => {
         .json({ message: "Failed to update chatroom partecipants" });
     }
 
-    res.status(200).json({ updatedInvitation, updatedPartecipants });
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        partecipates: userPartecipationsArray,
+      },
+      { new: true }
+    );
+
+    res
+      .status(200)
+      .json({ updatedInvitation, updatedPartecipants, updatedUser });
   } catch (err) {
     console.log(
       "An error occurred while accepting an invitation: ",

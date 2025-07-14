@@ -13,6 +13,7 @@ const mongoose = require("mongoose");
 const connection = require("./config/database/users");
 const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ACCESS_STRING);
@@ -20,6 +21,12 @@ mongoose.connect(process.env.DB_ACCESS_STRING);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(__dirname + "/src"));

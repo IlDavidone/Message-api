@@ -12,10 +12,15 @@ const {
   getChatroomInformations,
   addAdminToChatroom,
   removeAdminInChatroom,
+  getUserChatrooms,
 } = require("../controllers/chatroomUtils");
 
 router.get("/chatroom/info/:name", authenticatedRoute, (req, res, next) => {
   getChatroomInformations(req, res);
+});
+
+router.get("/chatroom/user", authenticatedRoute, async (req, res, next) => {
+  getUserChatrooms(req, res);
 });
 
 router.post(
