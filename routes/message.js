@@ -14,7 +14,6 @@ const {
 router.post(
   "/message/send/:id/:name",
   authenticatedRoute,
-  chatroomAdminValidation,
   async (req, res, next) => {
     sendMessages(req, res);
   }

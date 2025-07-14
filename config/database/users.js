@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   email: String,
   passwordSalt: String,
   passwordHash: String,
+  profilePicture: String,
   admin: Boolean,
   partecipates: [
     {

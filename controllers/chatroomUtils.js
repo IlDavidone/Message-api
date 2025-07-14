@@ -1,5 +1,6 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
+const cloudinary = require("../config/images/cloudinary");
 const User = require("../config/database/users");
 const Chatroom = require("../config/database/chatrooms");
 const Invitation = require("../config/database/invitations");
@@ -90,6 +91,8 @@ export const createChatroom = async (req, res) => {
         .json({ message: "Invalid token credentials, please log in again" });
     }
 
+    const userPartecipationsArray = user.partecipates;
+
     const chatroomInsertion = new Chatroom({
       name: chatroomName,
       isPublic: false,
@@ -107,9 +110,23 @@ export const createChatroom = async (req, res) => {
           username: user.username,
         },
       ],
+      image: "",
       creationDate: Date.now(),
       updateDate: Date.now(),
     });
+
+    userPartecipationsArray.push({
+      chatroomId: chatroomInsertion._id,
+      chatroomName: chatroomInsertion.name,
+    });
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        partecipates: userPartecipationsArray,
+      },
+      { new: true }
+    );
 
     if (chatroomInsertion) {
       await chatroomInsertion.save();
@@ -122,6 +139,7 @@ export const createChatroom = async (req, res) => {
         admins: chatroomInsertion.admins,
         creationDate: chatroomInsertion.creationDate,
         updateDate: chatroomInsertion.updateDate,
+        updatedUser,
       });
     } else {
       res.status(400).json({ message: "Invalid data provided" });
@@ -180,7 +198,7 @@ export const deleteChatroom = async (req, res) => {
 export const updateChatroom = async (req, res) => {
   try {
     const chatroomId = req.params.id;
-    const { name, isPublic, owner } = req.body;
+    const { name, isPublic, owner, image } = req.body;
 
     if (!chatroomId) {
       return res
@@ -217,12 +235,20 @@ export const updateChatroom = async (req, res) => {
       }
     }
 
+    let chatroomImage = "";
+
+    if (image) {
+      const upload = await cloudinary.uploader.upload(image);
+      chatroomImage = upload.secure_url;
+    }
+
     const updatedChatroom = await Chatroom.findByIdAndUpdate(
       chatroomProperties._id,
       {
         name: chatroomProperties.name,
         isPublic: chatroomProperties.isPublic,
         owner: chatroomProperties.owner,
+        image: chatroomImage,
         updateDate: Date.now(),
       },
       { new: true }

@@ -3,6 +3,7 @@ const require = createRequire(import.meta.url);
 const Message = require("../config/database/messages");
 const Chatroom = require("../config/database/chatrooms");
 const Channel = require("../config/database/channels");
+const cloudinary = require("../config/images/cloudinary");
 
 export const sendMessages = async (req, res) => {
   try {
@@ -43,12 +44,21 @@ export const sendMessages = async (req, res) => {
         .json({ message: "No existing channel found within this chatroom" });
     }
 
+    let mediaUrlArray = [];
+
+    if (media) {
+      for (let i = 0; i < media.length; i++) {
+        const upload = await cloudinary.uploader.upload(media[i]);
+        mediaUrlArray.push(upload.secure_url);
+      }
+    }
+
     const messageInsertion = new Message({
       sender: req.user._id,
       toChatroom: true,
       recipient: existingChannel._id,
       text: text,
-      media: media,
+      media: mediaUrlArray,
     });
 
     if (!messageInsertion) {
@@ -201,12 +211,10 @@ export const removeMessage = async (req, res) => {
         console.log("An error occurred while deleting a message");
       });
 
-    res
-      .status(200)
-      .json({
-        message: "The message has been deleted successfully",
-        message: existingMessage,
-      });
+    res.status(200).json({
+      message: "The message has been deleted successfully",
+      message: existingMessage,
+    });
   } catch (err) {
     console.log("An error occurred while deleting a message: ", err.message);
     res.status(500).json({ message: "Internal server error" });

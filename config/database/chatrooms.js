@@ -29,6 +29,7 @@ const chatroomSchema = new mongoose.Schema({
       username: String,
     },
   ],
+  image: String,
   creationDate: {
     type: Date,
     required: true,
