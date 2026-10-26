@@ -1,24 +1,22 @@
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
 const jwt = require("jsonwebtoken");
 const User = require("../config/database/users");
 
-export const authenticatedRoute = async (req, res, next) => {
+const authenticatedRoute = async (req, res, next) => {
   try {
     const token = req.cookies.jwt;
 
     if (!token) {
       return res
-        .status(401)
-        .json({ message: "You are not authorized, no token provided" });
+      .status(401)
+      .json({ message: "You are not authorized, no token provided" });
     }
 
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
     if (!decodedToken) {
       return res
-        .status(401)
-        .json({ message: "You are not authorized, invalid token provided" });
+      .status(401)
+      .json({ message: "You are not authorized, invalid token provided" });
     }
 
     const user = await User.findById(decodedToken.userId).select(
@@ -37,3 +35,5 @@ export const authenticatedRoute = async (req, res, next) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+module.exports = { authenticatedRoute };
