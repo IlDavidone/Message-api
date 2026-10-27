@@ -4,6 +4,7 @@ const cloudinary = require("../config/images/cloudinary");
 const User = require("../config/database/users");
 const Chatroom = require("../config/database/chatrooms");
 const Invitation = require("../config/database/invitations");
+const { isValidUploadSource } = require("./uploadValidation");
 
 export const getUserChatrooms = async (req, res) => {
   try {
@@ -45,6 +46,16 @@ export const getChatroomInformations = async (req, res) => {
       return res
         .status(404)
         .json({ message: `Chatroom with the name ${chatroomName} not found` });
+    }
+
+    const isPartecipant = existingChatroom.partecipants.some(
+      (partecipant) => partecipant.id == req.user._id
+    );
+
+    if (!existingChatroom.isPublic && !isPartecipant) {
+      return res.status(401).json({
+        message: "You are not authorized to view this chatroom - Not a partecipant",
+      });
     }
 
     res.status(200).json({
@@ -227,6 +238,12 @@ export const updateChatroom = async (req, res) => {
     }
 
     if (owner) {
+      if (chatroomProperties.owner != req.user._id) {
+        return res.status(401).json({
+          message: "You are not authorized to change the chatroom owner",
+        });
+      }
+
       const ownerId = await User.findOne({
         name: { $regex: owner, $options: "i" },
       });
@@ -238,6 +255,12 @@ export const updateChatroom = async (req, res) => {
     let chatroomImage = "";
 
     if (image) {
+      if (!isValidUploadSource(image)) {
+        return res
+          .status(400)
+          .json({ message: "Invalid image source provided" });
+      }
+
       const upload = await cloudinary.uploader.upload(image);
       chatroomImage = upload.secure_url;
     }

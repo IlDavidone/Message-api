@@ -4,6 +4,7 @@ const Message = require("../config/database/messages");
 const Chatroom = require("../config/database/chatrooms");
 const Channel = require("../config/database/channels");
 const cloudinary = require("../config/images/cloudinary");
+const { isValidUploadSource } = require("./uploadValidation");
 
 export const sendMessages = async (req, res) => {
   try {
@@ -48,6 +49,12 @@ export const sendMessages = async (req, res) => {
 
     if (media) {
       for (let i = 0; i < media.length; i++) {
+        if (!isValidUploadSource(media[i])) {
+          return res
+            .status(400)
+            .json({ message: "Invalid media source provided" });
+        }
+
         const upload = await cloudinary.uploader.upload(media[i]);
         mediaUrlArray.push(upload.secure_url);
       }

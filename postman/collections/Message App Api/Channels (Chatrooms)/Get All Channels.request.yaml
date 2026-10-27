@@ -1,0 +1,5 @@
+$kind: http-request
+url: http://localhost:3000/api/v1/channel/686d73e9a235d6a6e0460a66
+method: GET
+settings: {}
+order: 2000

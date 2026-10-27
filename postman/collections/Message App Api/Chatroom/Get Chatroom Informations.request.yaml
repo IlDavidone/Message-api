@@ -1,0 +1,5 @@
+$kind: http-request
+url: http://localhost:3000/api/v1/chatroom/info/tavetipensos
+method: GET
+settings: {}
+order: 7000

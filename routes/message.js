@@ -3,6 +3,9 @@ const router = express.Router();
 const {
   chatroomAdminValidation,
 } = require("../middleware/chatroomAdminValidation");
+const {
+  chatroomParticipantValidation,
+} = require("../middleware/chatroomParticipantValidation");
 const { authenticatedRoute } = require("../middleware/auth");
 const {
   sendMessages,
@@ -14,6 +17,7 @@ const {
 router.post(
   "/message/send/:id/:name",
   authenticatedRoute,
+  chatroomParticipantValidation,
   async (req, res, next) => {
     sendMessages(req, res);
   }
@@ -30,6 +34,7 @@ router.delete(
 router.get(
   "/message/fetch/:id/:name",
   authenticatedRoute,
+  chatroomParticipantValidation,
   async (req, res, next) => {
     fetchAllMessages(req, res);
   }
@@ -38,6 +43,7 @@ router.get(
 router.get(
   "/message/paginated/fetch/:id/:name",
   authenticatedRoute,
+  chatroomParticipantValidation,
   async (req, res, next) => {
     fetchPaginatedMessages(req, res);
   }

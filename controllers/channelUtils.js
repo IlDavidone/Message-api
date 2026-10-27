@@ -155,7 +155,8 @@ export const deleteChannel = async (req, res) => {
     }
 
     const existingChannel = await Channel.findOne({
-      name: { $regex: channelName, $options: "i" },
+      chatroomId: chatroomId,
+      name: { $regex: `^${channelName}$`, $options: "i" },
     });
 
     if (!existingChannel) {
@@ -164,7 +165,7 @@ export const deleteChannel = async (req, res) => {
         .json({ message: "No channel found with provided id" });
     }
 
-    Channel.deleteOne({ name: existingChannel.name })
+    Channel.deleteOne({ _id: existingChannel._id })
       .then(console.log(`${existingChannel.name} has been deleted`))
       .catch((err) => {
         console.log(`An error occurred while deleting ${channelName} channel`);

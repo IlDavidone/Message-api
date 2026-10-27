@@ -14,12 +14,14 @@ const connection = require("./config/database/users");
 const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const { sanitizeRequestData } = require("./middleware/sanitizeInput");
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ACCESS_STRING);
 
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
+app.use(sanitizeRequestData);
 app.use(cookieParser());
 app.use(
   cors({

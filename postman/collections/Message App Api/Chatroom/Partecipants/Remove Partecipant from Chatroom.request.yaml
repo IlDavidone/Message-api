@@ -1,0 +1,5 @@
+$kind: http-request
+url: ""
+method: DELETE
+settings: {}
+order: 2000

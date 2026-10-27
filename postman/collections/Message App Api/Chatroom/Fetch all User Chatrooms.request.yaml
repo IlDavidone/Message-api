@@ -1,0 +1,5 @@
+$kind: http-request
+url: http://localhost:3000/api/v1/chatroom/user/68738720247244bb512723ee
+method: GET
+settings: {}
+order: 3000

@@ -1,0 +1,8 @@
+$kind: http-request
+url: http://localhost:3000/api/v1/chatroom/admin/remove/Tavetipensos
+method: DELETE
+body:
+  type: json
+  content: "{\r\n    \"name\": \"Gionny\"\r\n}"
+settings: {}
+order: 2000
