@@ -11,7 +11,7 @@ const {
 require("dotenv").config();
 
 router.post(
-  "/invitations/send/:name",
+  "/invitations/send/:name/:id",
   authenticatedRoute,
   async (req, res, next) => {
     sendPartecipantInvitation(req, res);

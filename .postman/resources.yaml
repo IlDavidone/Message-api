@@ -1,5 +1,0 @@
-workspace:
-  id: 59432fa2-a1f1-4263-8bb2-cd05f7110eea
-cloudResources:
-  collections:
-    ../postman/collections/Message App Api: 46519370-9049faab-47d0-4cbf-8e08-21fa0d113f86

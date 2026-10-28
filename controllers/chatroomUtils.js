@@ -1,5 +1,6 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
+const mongoose = require("mongoose");
 const cloudinary = require("../config/images/cloudinary");
 const User = require("../config/database/users");
 const Chatroom = require("../config/database/chatrooms");
@@ -448,14 +449,8 @@ export const removeAdminInChatroom = async (req, res) => {
 
 export const sendPartecipantInvitation = async (req, res) => {
   try {
-    const { name } = req.body;
     const chatroomName = req.params.name;
-
-    if (!name) {
-      return res
-        .status(400)
-        .json({ message: "The provided username is invalid" });
-    }
+    const userId = req.params.id;
 
     if (!chatroomName) {
       return res
@@ -463,14 +458,18 @@ export const sendPartecipantInvitation = async (req, res) => {
         .json({ message: "The provided chatroom name is invalid" });
     }
 
-    const existingUser = await User.findOne({
-      username: { $regex: name, $options: "i" },
-    });
+    if (!userId || !mongoose.isValidObjectId(userId)) {
+      return res
+        .status(400)
+        .json({ message: "The provided user id is invalid" });
+    }
+
+    const existingUser = await User.findById(userId);
 
     if (!existingUser) {
       return res
         .status(404)
-        .json({ message: `No entry found with ${name} name` });
+        .json({ message: `No user found with id ${userId}` });
     }
 
     const existingChatroom = await Chatroom.findOne({

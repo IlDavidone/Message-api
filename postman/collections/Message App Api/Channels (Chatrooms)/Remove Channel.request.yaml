@@ -1,5 +1,0 @@
-$kind: http-request
-url: ""
-method: DELETE
-settings: {}
-order: 4000

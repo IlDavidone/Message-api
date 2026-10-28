@@ -1,5 +1,0 @@
-$kind: http-request
-url: http://localhost:3000/api/v1/chatroom/delete/Tavetipensoso
-method: DELETE
-settings: {}
-order: 5000

@@ -42,6 +42,12 @@ export const acceptInvitation = async (req, res) => {
         .json({ message: "No invitation with provided id found" });
     }
 
+    if (existingInvitation.recipient != req.user._id) {
+      return res
+        .status(401)
+        .json({ message: "You are not authorized to accept this invitation" });
+    }
+
     if (existingInvitation.accepted === true) {
       return res.status(403).json({ message: "Invitation already accepted" });
     }

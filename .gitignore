@@ -1,5 +1,6 @@
 node_modules
-test
+postman/
+.postman/
 .git
 .vscode
 .env

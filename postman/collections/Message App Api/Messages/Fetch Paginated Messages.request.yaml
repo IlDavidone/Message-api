@@ -1,8 +1,0 @@
-$kind: http-request
-url: http://localhost:3000/api/v1/message/paginated/fetch/687167354affcd3831780b98/yo?page=1&limit=5
-method: GET
-queryParams:
-  page: "1"
-  limit: "5"
-settings: {}
-order: 2000

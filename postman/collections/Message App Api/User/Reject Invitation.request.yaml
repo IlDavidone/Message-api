@@ -1,5 +1,0 @@
-$kind: http-request
-url: http://localhost:3000/api/v1/invitations/reject/686d749cc88e12f3aabf5f43
-method: DELETE
-settings: {}
-order: 3000

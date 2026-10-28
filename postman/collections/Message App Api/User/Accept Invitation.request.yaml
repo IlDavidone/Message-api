@@ -1,5 +1,0 @@
-$kind: http-request
-url: ""
-method: PATCH
-settings: {}
-order: 2000
