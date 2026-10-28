@@ -23,7 +23,7 @@ const chatroomParticipantValidation = async (req, res, next) => {
     );
 
     if (!checkIfUserIsPartecipant) {
-      return res.status(401).json({
+      return res.status(403).json({
         message:
           "You are not authorized to perform this operation - Not a partecipant",
       });

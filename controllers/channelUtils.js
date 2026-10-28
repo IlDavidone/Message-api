@@ -60,7 +60,7 @@ export const getAllPublicChatroomChannels = async (req, res) => {
     );
 
     if (!checkIfUserIsPartecipant) {
-      return res.status(401).json({
+      return res.status(403).json({
         message: "You are not authorized to fetch channels - Not a partecipant",
       });
     }
@@ -122,7 +122,7 @@ export const createChannel = async (req, res) => {
 
     await channelInsertion.save();
 
-    res.status(200).json({ channelInsertion });
+    res.status(201).json({ channelInsertion });
   } catch (err) {
     console.log("An error occurred while creating a channel: ", err.message);
     res.status(500).json({ message: "Internal server error" });

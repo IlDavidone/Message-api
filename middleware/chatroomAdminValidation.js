@@ -27,7 +27,7 @@ export const chatroomAdminValidation = async (req, res, next) => {
     );
 
     if (!checkIfUserIsAdmin) {
-      return res.status(401).json({
+      return res.status(403).json({
         message:
           "You are not authorized to begin this operation - Not a chatroom admin",
       });

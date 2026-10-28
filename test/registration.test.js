@@ -2,29 +2,24 @@ const { test } = require("node:test");
 const assert = require("node:assert");
 
 test("Garantire che la registrazione avvenga correttamente", async () => {
-    const username = Date.now().toString();
+    const username = (Date.now() + Math.random() * 100).toString();
     
-    const testBody = {
+    const registrationTestBody = {
         username: username,
         email: username + "@mail.com",
-        password: "testpass"
+        password: (Date.now() * (Math.random() * 100)).toString()
     };
 
-    const response = await fetch("http://localhost:3000/api/v1/authentication/register", {
+    const registrationResponse = await fetch("http://localhost:3000/api/v1/authentication/register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(testBody),
+        body: JSON.stringify(registrationTestBody),
     });
-
-    console.log(response.status);
-
     
-    const body = await response.json();
+    const registrationBody = await registrationResponse.json();
     
-    console.log(body);
-    
-    assert.strictEqual(response.status, 201);
-    assert.strictEqual(body.passwordHash, undefined);
+    assert.strictEqual(registrationResponse.status, 201);
+    assert.strictEqual(registrationBody.passwordHash, undefined);
 });

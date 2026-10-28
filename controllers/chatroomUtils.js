@@ -54,7 +54,7 @@ export const getChatroomInformations = async (req, res) => {
     );
 
     if (!existingChatroom.isPublic && !isPartecipant) {
-      return res.status(401).json({
+      return res.status(403).json({
         message: "You are not authorized to view this chatroom - Not a partecipant",
       });
     }
@@ -142,7 +142,7 @@ export const createChatroom = async (req, res) => {
 
     if (chatroomInsertion) {
       await chatroomInsertion.save();
-      res.status(200).json({
+      res.status(201).json({
         name: chatroomInsertion.name,
         isPublic: chatroomInsertion.isPublic,
         partecipants: chatroomInsertion.partecipants,
@@ -183,7 +183,7 @@ export const deleteChatroom = async (req, res) => {
     const user = await User.findById(req.user._id);
 
     if (existingChatroom.owner != user._id) {
-      return res.status(401).json({
+      return res.status(403).json({
         message: "You are not authorized to delete this chatroom",
       });
     }
@@ -240,7 +240,7 @@ export const updateChatroom = async (req, res) => {
 
     if (owner) {
       if (chatroomProperties.owner != req.user._id) {
-        return res.status(401).json({
+        return res.status(403).json({
           message: "You are not authorized to change the chatroom owner",
         });
       }
@@ -323,7 +323,7 @@ export const addAdminToChatroom = async (req, res) => {
     }
 
     if (existingChatroom.owner != req.user._id) {
-      return res.status(401).json({
+      return res.status(403).json({
         message: "You are not authorized to add an admin to this chatroom",
       });
     }
@@ -408,7 +408,7 @@ export const removeAdminInChatroom = async (req, res) => {
     }
 
     if (existingChatroom.owner != req.user._id) {
-      return res.status(401).json({
+      return res.status(403).json({
         message: "You are not authorized to remove an admin from this chatroom",
       });
     }
@@ -495,7 +495,14 @@ export const sendPartecipantInvitation = async (req, res) => {
     }
 
     await invitationInsertion.save();
-    res.status(200).json(invitationInsertion);
+    res.status(201).json({
+      id: invitationInsertion._id,
+      chatroomId: invitationInsertion.chatroomId,
+      creator: invitationInsertion.creator,
+      recipient: invitationInsertion.recipient,
+      accepted: invitationInsertion.accepted,
+      creationDate: invitationInsertion.creationDate,
+    });
   } catch (err) {
     console.log("An error occurred while sending an invitation: ", err.message);
     res.status(500).json({ message: "Internal server error" });

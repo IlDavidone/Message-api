@@ -73,7 +73,7 @@ export const sendMessages = async (req, res) => {
     }
 
     await messageInsertion.save();
-    res.status(200).json({ messageInsertion });
+    res.status(201).json({ messageInsertion });
   } catch (err) {
     console.log("An error occurred while sending a message: ", err.message);
     res.status(500).json({ message: "Internal server error" });
@@ -208,7 +208,7 @@ export const removeMessage = async (req, res) => {
 
     if (existingMessage.sender != req.user._id) {
       return res
-        .status(401)
+        .status(403)
         .json({ message: "Can't remove the message - Not authorized" });
     }
 
