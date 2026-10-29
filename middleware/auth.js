@@ -11,9 +11,10 @@ const authenticatedRoute = async (req, res, next) => {
       .json({ message: "You are not authorized, no token provided" });
     }
 
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
-
-    if (!decodedToken) {
+    let decodedToken;
+    try {
+      decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    } catch (jwtErr) {
       return res
       .status(401)
       .json({ message: "You are not authorized, invalid token provided" });
@@ -24,7 +25,7 @@ const authenticatedRoute = async (req, res, next) => {
     );
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(401).json({ message: "User not found" });
     }
 
     req.user = user;

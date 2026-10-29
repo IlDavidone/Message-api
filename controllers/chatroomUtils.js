@@ -92,7 +92,7 @@ export const createChatroom = async (req, res) => {
     });
 
     if (existingChatroom) {
-      return res.status(400).json({ message: "Chatroom name already taken" });
+      return res.status(409).json({ message: "Chatroom name already taken" });
     }
 
     const user = await User.findById(req.user._id);
@@ -336,7 +336,7 @@ export const addAdminToChatroom = async (req, res) => {
 
     if (checkIfAdminExists != undefined) {
       return res
-        .status(400)
+        .status(409)
         .json({ message: "The selected admin already exists" });
     }
 
@@ -347,7 +347,7 @@ export const addAdminToChatroom = async (req, res) => {
     );
 
     if (checkIfPartecipantExists === undefined) {
-      return res.status(400).json({
+      return res.status(409).json({
         message: "The selected user isn't a partecipant of this chatroom",
       });
     }
@@ -419,9 +419,9 @@ export const removeAdminInChatroom = async (req, res) => {
       (admin) => admin.username.toLowerCase() === name.toLowerCase()
     );
 
-    if (checkIfAdminExists != undefined) {
+    if (checkIfAdminExists == undefined) {
       return res
-        .status(400)
+        .status(409)
         .json({ message: "The selected admin doesn't exist" });
     }
 
