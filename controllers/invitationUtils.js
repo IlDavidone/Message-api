@@ -8,6 +8,18 @@ export const fetchInvitations = async (req, res) => {
   try {
     const invitations = await Invitation.find({ recipient: req.user._id });
 
+    if (!invitations) {
+      return res
+        .status(404)
+        .json({ message: "No invitations found for provided user" });
+    }
+
+    if (invitations.length < 1) {
+      return res
+        .status(404)
+        .json({ message: "No invitations found for provided user" });
+    }
+
     res.status(200).json({ invitations });
   } catch (err) {
     console.log(
@@ -37,7 +49,7 @@ export const acceptInvitation = async (req, res) => {
     }
 
     if (existingInvitation.accepted === true) {
-      return res.status(409).json({ message: "Invitation already accepted" });
+      return res.status(403).json({ message: "Invitation already accepted" });
     }
 
     const existingChatroom = await Chatroom.findById(
@@ -58,7 +70,7 @@ export const acceptInvitation = async (req, res) => {
 
     if (partecipantExists) {
       return res
-        .status(409)
+        .status(400)
         .json({ message: "You are already a partecipant of this chatroom" });
     }
 
@@ -66,7 +78,7 @@ export const acceptInvitation = async (req, res) => {
 
     if (!user) {
       return res
-        .status(401)
+        .status(400)
         .json({ message: "Invalid token provided - Sign-in again" });
     }
 
@@ -151,7 +163,7 @@ export const rejectInvitation = async (req, res) => {
     }
 
     if (existingInvitation.accepted === true) {
-      return res.status(409).json({ message: "Invitation already accepted" });
+      return res.status(403).json({ message: "Invitation already accepted" });
     }
 
     const updatedInvitation = await Invitation.findOneAndDelete(req.params.id);

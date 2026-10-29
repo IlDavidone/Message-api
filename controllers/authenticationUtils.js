@@ -11,7 +11,7 @@ export const signup = async (req, res) => {
   const { username, email, password } = req.body;
   try {
     if (req.cookies.jwt) {
-      return res.status(409).json({ message: "User is already signed in" });
+      return res.status(400).json({ message: "User is already signed in" });
     }
 
     if (!username | !email | !password) {
@@ -30,7 +30,7 @@ export const signup = async (req, res) => {
 
     if (userEmail) {
       return res
-        .status(409)
+        .status(400)
         .json({ message: "The provided email is already registered" });
     }
 
@@ -40,7 +40,7 @@ export const signup = async (req, res) => {
 
     if (userName !== null) {
       return res
-        .status(409)
+        .status(400)
         .json({ message: "The selected username already exists" });
     }
 
@@ -83,7 +83,7 @@ export const signin = async (req, res) => {
     const { email, password } = req.body;
 
     if (req.cookies.jwt) {
-      return res.status(409).json({ message: "User is already signed in" });
+      return res.status(400).json({ message: "User is already signed in" });
     }
 
     if (!email || !password) {
@@ -101,7 +101,7 @@ export const signin = async (req, res) => {
     const user = await User.findOne({ email: email });
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials submitted" });
+      return res.status(404).json({ message: "Invalid credentials submitted" });
     }
 
     const passwordVerification = verifyPassword(
@@ -111,7 +111,7 @@ export const signin = async (req, res) => {
     );
 
     if (!passwordVerification) {
-      return res.status(401).json({ message: "Invalid password submitted" });
+      return res.status(400).json({ message: "Invalid password submitted" });
     }
 
     generateToken(user._id, res);

@@ -34,7 +34,7 @@ export const sendMessages = async (req, res) => {
         .json({ message: "No chatroom found with provided" });
     }
 
-    const existingChannel = await Channel.findOne({
+    const existingChannel = await Channel.find({
       name: { $regex: channelName, $options: "i" },
       chatroomId: existingChatroom._id,
     });
@@ -101,7 +101,7 @@ export const fetchAllMessages = async (req, res) => {
         .json({ message: "No chatroom found with provided" });
     }
 
-    const existingChannel = await Channel.findOne({
+    const existingChannel = await Channel.find({
       name: { $regex: channelName, $options: "i" },
       chatroomId: existingChatroom._id,
     });
@@ -115,6 +115,12 @@ export const fetchAllMessages = async (req, res) => {
     const messages = await Message.find({
       recipient: existingChannel._id,
     });
+
+    if (!messages) {
+      return res
+        .status(404)
+        .json({ message: "No messages found within this channel" });
+    }
 
     res.status(200).json({ messages });
   } catch (err) {
@@ -145,7 +151,7 @@ export const fetchPaginatedMessages = async (req, res) => {
         .json({ message: "No chatroom found with provided" });
     }
 
-    const existingChannel = await Channel.findOne({
+    const existingChannel = await Channel.find({
       name: { $regex: channelName, $options: "i" },
       chatroomId: existingChatroom._id,
     });
@@ -166,6 +172,12 @@ export const fetchPaginatedMessages = async (req, res) => {
     const messagesCount = await Message.countDocuments({
       recipient: existingChannel._id,
     });
+
+    if (!messages) {
+      return res
+        .status(404)
+        .json({ message: "No messages found within this channel" });
+    }
 
     res.status(200).json({
       messages,

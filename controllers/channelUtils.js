@@ -22,6 +22,12 @@ export const getAllChatroomChannels = async (req, res) => {
 
     const existingChannels = await Channel.find({ chatroomId: chatroomId });
 
+    if (!existingChannels) {
+      return res
+        .status(404)
+        .json({ message: "No channels found within this chatroom" });
+    }
+
     res.status(200).json({ existingChannels });
   } catch (err) {
     console.log("An error occurred while fetching a channel: ", err.message);
@@ -63,6 +69,12 @@ export const getAllPublicChatroomChannels = async (req, res) => {
       chatroomId: chatroomId,
       forAdmin: false,
     });
+
+    if (!existingPublicChannels) {
+      return res
+        .status(404)
+        .json({ message: "No channels found within this chatroom" });
+    }
 
     res.status(200).json({ existingPublicChannels });
   } catch (err) {
