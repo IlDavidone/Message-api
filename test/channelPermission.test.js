@@ -52,6 +52,8 @@ test("Un utente che non partecipa a una chatroom non può leggere i messaggi di 
         headers: { Cookie: ownerCookie },
     });
 
+    const createChatroomBody = await createChatroomResponse.json();
+    console.log(createChatroomResponse.status, createChatroomBody);
     assert.strictEqual(createChatroomResponse.status, 201);
 
     const chatroomInfoResponse = await fetch(`${BASE_URL}/chatroom/info/${owner.username}`, {
@@ -59,6 +61,8 @@ test("Un utente che non partecipa a una chatroom non può leggere i messaggi di 
         headers: { Cookie: ownerCookie },
     });
     const chatroomInfo = await chatroomInfoResponse.json();
+
+    console.log(chatroomInfoResponse.status, chatroomInfo);
 
     const channelName = "general";
 
@@ -70,6 +74,8 @@ test("Un utente che non partecipa a una chatroom non può leggere i messaggi di 
         }
     );
 
+    const createChannelBody = await createChannelResponse.json();
+    console.log(createChannelResponse.status, createChannelBody);
     assert.strictEqual(createChannelResponse.status, 201);
 
     const fetchMessagesAsOutsiderResponse = await fetch(
@@ -80,6 +86,8 @@ test("Un utente che non partecipa a una chatroom non può leggere i messaggi di 
         }
     );
 
+    const fetchMessagesAsOutsiderBody = await fetchMessagesAsOutsiderResponse.json();
+    console.log(fetchMessagesAsOutsiderResponse.status, fetchMessagesAsOutsiderBody);
     assert.strictEqual(fetchMessagesAsOutsiderResponse.status, 403);
 });
 
@@ -94,6 +102,8 @@ test("Un utente non può accettare un invito indirizzato a un altro utente", asy
         headers: { Cookie: ownerCookie },
     });
 
+    const createChatroomBody = await createChatroomResponse.json();
+    console.log(createChatroomResponse.status, createChatroomBody);
     assert.strictEqual(createChatroomResponse.status, 201);
 
     const sendInvitationResponse = await fetch(
@@ -104,9 +114,9 @@ test("Un utente non può accettare un invito indirizzato a un altro utente", asy
         }
     );
 
-    assert.strictEqual(sendInvitationResponse.status, 201);
-
     const invitation = await sendInvitationResponse.json();
+    console.log(sendInvitationResponse.status, invitation);
+    assert.strictEqual(sendInvitationResponse.status, 201);
 
     const acceptInvitationAsIntruderResponse = await fetch(
         `${BASE_URL}/invitations/accept/${invitation.id}`,
@@ -116,5 +126,31 @@ test("Un utente non può accettare un invito indirizzato a un altro utente", asy
         }
     );
 
+    const acceptInvitationAsIntruderBody = await acceptInvitationAsIntruderResponse.json();
+    console.log(acceptInvitationAsIntruderResponse.status, acceptInvitationAsIntruderBody);
     assert.strictEqual(acceptInvitationAsIntruderResponse.status, 403);
+});
+
+test("Un utente che non partecipa a una chatroom non può ricevere le sue informazioni", async () => {
+    const { users, usersCookies } = await registerUsers(2);
+    const [owner, outsider] = users;
+    const [ownerCookie, outsiderCookie] = usersCookies;
+
+    const createChatroomResponse = await fetch(`${BASE_URL}/chatroom/create/${owner.username}`, {
+        method: "POST",
+        headers: { Cookie: ownerCookie },
+    });
+
+    const createChatroomBody = await createChatroomResponse.json();
+    console.log(createChatroomResponse.status, createChatroomBody);
+    assert.strictEqual(createChatroomResponse.status, 201);
+
+    const chatroomInfoResponse = await fetch(`${BASE_URL}/chatroom/info/${owner.username}`, {
+        method: "GET",
+        headers: { Cookie: outsiderCookie },
+    });
+    const chatroomInfo = await chatroomInfoResponse.json();
+
+    console.log(chatroomInfoResponse.status, chatroomInfo);
+    assert.strictEqual(chatroomInfoResponse.status, 403);
 });

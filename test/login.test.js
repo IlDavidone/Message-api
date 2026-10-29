@@ -51,6 +51,6 @@ test("Garantire che non si possa accedere con credenziali errate", async () => {
     console.log(loginResponse.status);
     console.log(loginBody);
 
-    assert.strictEqual(loginResponse.status, 400);
+    assert.strictEqual(loginResponse.status, 401);
 });
 
