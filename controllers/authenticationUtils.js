@@ -111,7 +111,7 @@ export const signin = async (req, res) => {
     );
 
     if (!passwordVerification) {
-      return res.status(400).json({ message: "Invalid password submitted" });
+      return res.status(401).json({ message: "Invalid password submitted" });
     }
 
     generateToken(user._id, res);

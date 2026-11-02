@@ -166,7 +166,7 @@ export const rejectInvitation = async (req, res) => {
       return res.status(403).json({ message: "Invitation already accepted" });
     }
 
-    const updatedInvitation = await Invitation.findOneAndDelete(req.params.id);
+    const updatedInvitation = await Invitation.findOneAndDelete({ _id: invitationId });
 
     res.status(200).json({ updatedInvitation });
   } catch (err) {
