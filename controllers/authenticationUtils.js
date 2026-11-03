@@ -101,7 +101,7 @@ export const signin = async (req, res) => {
     const user = await User.findOne({ email: email });
 
     if (!user) {
-      return res.status(404).json({ message: "Invalid credentials submitted" });
+      return res.status(401).json({ message: "Invalid credentials submitted" });
     }
 
     const passwordVerification = verifyPassword(
@@ -111,7 +111,7 @@ export const signin = async (req, res) => {
     );
 
     if (!passwordVerification) {
-      return res.status(401).json({ message: "Invalid password submitted" });
+      return res.status(401).json({ message: "Invalid credentials submitted" });
     }
 
     generateToken(user._id, res);
