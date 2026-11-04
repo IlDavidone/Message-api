@@ -49,7 +49,7 @@ export const acceptInvitation = async (req, res) => {
     }
 
     if (existingInvitation.accepted === true) {
-      return res.status(403).json({ message: "Invitation already accepted" });
+      return res.status(409).json({ message: "Invitation already accepted" });
     }
 
     const existingChatroom = await Chatroom.findById(
