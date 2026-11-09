@@ -83,7 +83,7 @@ export const signin = async (req, res) => {
     const { email, password } = req.body;
 
     if (req.cookies.jwt) {
-      return res.status(400).json({ message: "User is already signed in" });
+      return res.status(409).json({ message: "User is already signed in" });
     }
 
     if (!email || !password) {
