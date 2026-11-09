@@ -30,7 +30,7 @@ export const signup = async (req, res) => {
 
     if (userEmail) {
       return res
-        .status(400)
+        .status(409)
         .json({ message: "The provided email is already registered" });
     }
 
