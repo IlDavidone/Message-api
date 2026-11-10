@@ -35,7 +35,7 @@ export const signup = async (req, res) => {
     }
 
     const userName = await User.exists({
-      username: { $regex: username, $options: "i" },
+      username: { $regex: `^${username}$`, $options: "i" },
     });
 
     if (userName !== null) {
