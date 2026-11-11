@@ -151,7 +151,7 @@ export const fetchPaginatedMessages = async (req, res) => {
         .json({ message: "No chatroom found with provided" });
     }
 
-    const existingChannel = await Channel.find({
+    const existingChannel = await Channel.findOne({
       name: { $regex: channelName, $options: "i" },
       chatroomId: existingChatroom._id,
     });
