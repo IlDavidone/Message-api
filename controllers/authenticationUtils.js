@@ -11,7 +11,7 @@ export const signup = async (req, res) => {
   const { username, email, password } = req.body;
   try {
     if (req.cookies.jwt) {
-      return res.status(400).json({ message: "User is already signed in" });
+      return res.status(409).json({ message: "User is already signed in" });
     }
 
     if (!username | !email | !password) {
