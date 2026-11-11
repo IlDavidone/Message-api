@@ -40,7 +40,7 @@ export const signup = async (req, res) => {
 
     if (userName !== null) {
       return res
-        .status(400)
+        .status(409)
         .json({ message: "The selected username already exists" });
     }
 
