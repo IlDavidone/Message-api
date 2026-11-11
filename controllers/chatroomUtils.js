@@ -92,7 +92,7 @@ export const createChatroom = async (req, res) => {
     });
 
     if (existingChatroom) {
-      return res.status(400).json({ message: "Chatroom name already taken" });
+      return res.status(409).json({ message: "Chatroom name already taken" });
     }
 
     const user = await User.findById(req.user._id);
