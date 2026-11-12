@@ -336,7 +336,7 @@ export const addAdminToChatroom = async (req, res) => {
 
     if (checkIfAdminExists != undefined) {
       return res
-        .status(400)
+        .status(409)
         .json({ message: "The selected admin already exists" });
     }
 
