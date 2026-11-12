@@ -70,7 +70,7 @@ export const acceptInvitation = async (req, res) => {
 
     if (partecipantExists) {
       return res
-        .status(400)
+        .status(409)
         .json({ message: "You are already a partecipant of this chatroom" });
     }
 
