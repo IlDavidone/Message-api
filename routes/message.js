@@ -39,6 +39,7 @@ router.get(
   "/message/fetch/:id/:name",
   authenticatedRoute,
   chatroomParticipantValidation,
+  channelForAdminValidation,
   async (req, res, next) => {
     fetchAllMessages(req, res);
   }
