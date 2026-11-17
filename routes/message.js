@@ -6,6 +6,9 @@ const {
 const {
   chatroomParticipantValidation,
 } = require("../middleware/chatroomParticipantValidation");
+const {
+  channelForAdminValidation,
+} = require("../middleware/channelForAdminValidation");
 const { authenticatedRoute } = require("../middleware/auth");
 const {
   sendMessages,
@@ -18,6 +21,7 @@ router.post(
   "/message/send/:id/:name",
   authenticatedRoute,
   chatroomParticipantValidation,
+  channelForAdminValidation,
   async (req, res, next) => {
     sendMessages(req, res);
   }
