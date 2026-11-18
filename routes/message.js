@@ -49,6 +49,7 @@ router.get(
   "/message/paginated/fetch/:id/:name",
   authenticatedRoute,
   chatroomParticipantValidation,
+  channelForAdminValidation,
   async (req, res, next) => {
     fetchPaginatedMessages(req, res);
   }
