@@ -4,4 +4,10 @@ const findByEmail = async (email) => {
   return await User.findOne({ email: email });
 };
 
-module.exports = { findByEmail };
+const existsByUsername = async (username) => {
+  return await User.exists({
+    username: { $regex: `^${username}$`, $options: "i" },
+  })
+};
+
+module.exports = { findByEmail, existsByUsername };

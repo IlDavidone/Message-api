@@ -1,7 +1,7 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { generateToken } = require("../config/authentication/jwt");
-const { findByEmail } = require("../repositories/userRepository");
+const { findByEmail, existsByUsername } = require("../repositories/userRepository");
 const User = require("../config/database/users");
 const crypto = require("crypto");
 const generatePassword =
@@ -35,9 +35,7 @@ export const signup = async (req, res) => {
         .json({ message: "The provided email is already registered" });
     }
 
-    const userName = await User.exists({
-      username: { $regex: `^${username}$`, $options: "i" },
-    });
+    const userName = await existsByUsername(username)
 
     if (userName !== null) {
       return res
