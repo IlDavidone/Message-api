@@ -10,4 +10,19 @@ const existsByUsername = async (username) => {
   })
 };
 
-module.exports = { findByEmail, existsByUsername };
+const insertUser = async ({ username, email, passwordSalt, passwordHash }) => {
+  const user = new User({
+    username,
+    email,
+    passwordSalt,
+    passwordHash,
+    admin: false,
+    partecipates: [],
+    verification: false,
+    creationDate: new Date(),
+  });
+
+  return await user.save();
+};
+
+module.exports = { findByEmail, existsByUsername, insertUser };

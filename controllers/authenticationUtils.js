@@ -1,7 +1,7 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { generateToken } = require("../config/authentication/jwt");
-const { findByEmail, existsByUsername } = require("../repositories/userRepository");
+const { findByEmail, existsByUsername, insertUser } = require("../repositories/userRepository");
 const User = require("../config/database/users");
 const crypto = require("crypto");
 const generatePassword =
@@ -45,20 +45,15 @@ export const signup = async (req, res) => {
 
     const { salt, hash } = generatePassword(password);
 
-    const userInsertion = new User({
+    const userInsertion = await insertUser({
       username,
       email,
       passwordSalt: salt,
       passwordHash: hash,
-      admin: false,
-      partecipates: [],
-      verification: false,
-      creationDate: new Date(),
     });
 
     if (userInsertion) {
       generateToken(userInsertion._id, res);
-      await userInsertion.save();
 
       res.status(201).json({
         id: userInsertion._id,
