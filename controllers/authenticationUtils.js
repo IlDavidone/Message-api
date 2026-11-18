@@ -1,6 +1,7 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { generateToken } = require("../config/authentication/jwt");
+const { findByEmail } = require("../repositories/userRepository");
 const User = require("../config/database/users");
 const crypto = require("crypto");
 const generatePassword =
@@ -26,7 +27,7 @@ export const signup = async (req, res) => {
         .json({ message: "The password is too short (Min. 8 characters)" });
     }
 
-    const userEmail = await User.findOne({ email: email });
+    const userEmail = await findByEmail(email);
 
     if (userEmail) {
       return res
@@ -98,7 +99,7 @@ export const signin = async (req, res) => {
         .json({ message: "Password must be 8 characters long" });
     }
 
-    const user = await User.findOne({ email: email });
+    const user = await findByEmail(email);
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials submitted" });
