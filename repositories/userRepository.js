@@ -25,4 +25,16 @@ const insertUser = async ({ username, email, passwordSalt, passwordHash }) => {
   return await user.save();
 };
 
-module.exports = { findByEmail, existsByUsername, insertUser };
+const mongoRepository = { findByEmail, existsByUsername, insertUser };
+
+const notImplemented = (name) => async () => {
+  throw new Error(`MySQL user repository: ${name} not implemented yet`);
+};
+
+const mysqlRepository = {
+  findByEmail: notImplemented("findByEmail"),
+  existsByUsername: notImplemented("existsByUsername"),
+  insertUser: notImplemented("insertUser"),
+};
+
+module.exports = process.env.USER_STORE === "mysql" ? mysqlRepository : mongoRepository;
