@@ -77,10 +77,30 @@ const mysqlExistsByUsername = async (username) => {
   return rows.length === 0 ? null : rows[0].id;
 };
 
+const mysqlInsertUser = async ({username, email, passwordSalt, passwordHash}) => {
+  const newDate = new Date();
+  
+  const [result] = await getMysqlPool().execute(
+    "INSERT INTO users (username, email, password_salt, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
+    [username, email, passwordSalt, passwordHash, newDate]
+  );
+
+  return {
+    _id: result.insertId,
+    username,
+    email,
+    passwordSalt,
+    passwordHash,
+    admin: false,
+    verification: false,
+    creationDate: newDate,
+  };
+};
+
 const mysqlRepository = {
   findByEmail: mysqlFindByEmail,
   existsByUsername: mysqlExistsByUsername,
-  insertUser: notImplemented("insertUser"),
+  insertUser: mysqlInsertUser,
 };
 
 module.exports = process.env.USER_STORE === "mysql" ? mysqlRepository : mongoRepository;
