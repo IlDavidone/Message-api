@@ -152,7 +152,7 @@ export const fetchPaginatedMessages = async (req, res) => {
     }
 
     const existingChannel = await Channel.findOne({
-      name: { $regex: channelName, $options: "i" },
+      name: { $regex: `^${channelName}$`, $options: "i" },
       chatroomId: existingChatroom._id,
     });
 
