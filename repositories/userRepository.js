@@ -68,9 +68,18 @@ const mysqlFindByEmail = async (email) => {
   return rows.length === 0 ? null : toUser(rows[0]);
 };
 
+const mysqlExistsByUsername = async (username) => {
+  const [rows] = await getMysqlPool().execute(
+    "SELECT id FROM users WHERE username = ?",
+    [username]
+  );
+
+  return rows.length === 0 ? null : rows[0].id;
+};
+
 const mysqlRepository = {
   findByEmail: mysqlFindByEmail,
-  existsByUsername: notImplemented("existsByUsername"),
+  existsByUsername: mysqlExistsByUsername,
   insertUser: notImplemented("insertUser"),
 };
 
