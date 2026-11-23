@@ -25,7 +25,12 @@ const insertUser = async ({ username, email, passwordSalt, passwordHash }) => {
   return await user.save();
 };
 
-const mongoRepository = { findByEmail, existsByUsername, insertUser };
+const mongoRepository = {
+  findByEmail,
+  existsByUsername,
+  insertUser,
+  close: async () => {},
+};
 
 const notImplemented = (name) => async () => {
   throw new Error(`MySQL user repository: ${name} not implemented yet`);
@@ -97,10 +102,18 @@ const mysqlInsertUser = async ({username, email, passwordSalt, passwordHash}) =>
   };
 };
 
+const mysqlClose = async () => {
+  if (mysqlPool) {
+    await mysqlPool.end();
+    mysqlPool = undefined;
+  }
+};
+
 const mysqlRepository = {
   findByEmail: mysqlFindByEmail,
   existsByUsername: mysqlExistsByUsername,
   insertUser: mysqlInsertUser,
+  close: mysqlClose,
 };
 
 module.exports = process.env.USER_STORE === "mysql" ? mysqlRepository : mongoRepository;
