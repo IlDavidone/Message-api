@@ -173,7 +173,7 @@ export const deleteChatroom = async (req, res) => {
     }
 
     const existingChatroom = await Chatroom.findOne({
-      name: { $regex: chatroomName, $options: "i" },
+      name: { $regex: `^${chatroomName}$`, $options: "i" },
     });
 
     if (!existingChatroom) {
@@ -188,7 +188,7 @@ export const deleteChatroom = async (req, res) => {
       });
     }
 
-    Chatroom.deleteOne({ name: { $regex: chatroomName, $options: "i" } })
+    Chatroom.deleteOne({ name: { $regex: `^${chatroomName}$`, $options: "i" } })
       .then(console.log(`${chatroomName} deleted`))
       .catch((err) => {
         console.log(
