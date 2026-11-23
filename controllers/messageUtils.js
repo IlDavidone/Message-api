@@ -1,5 +1,6 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
+const mongoose = require("mongoose");
 const Message = require("../config/database/messages");
 const Chatroom = require("../config/database/chatrooms");
 const Channel = require("../config/database/channels");
@@ -194,7 +195,7 @@ export const removeMessage = async (req, res) => {
   try {
     const messageId = req.params.id;
 
-    if (!messageId) {
+    if (!messageId || !mongoose.isValidObjectId(messageId)) {
       return res.status(400).json({ message: "Invalid message id format" });
     }
 
