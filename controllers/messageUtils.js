@@ -207,9 +207,21 @@ export const removeMessage = async (req, res) => {
     }
 
     if (existingMessage.sender != req.user._id) {
-      return res
-        .status(403)
-        .json({ message: "Can't remove the message - Not authorized" });
+      const existingChannel = await Channel.findById(existingMessage.recipient);
+
+      const existingChatroom = existingChannel
+        ? await Chatroom.findById(existingChannel.chatroomId)
+        : null;
+
+      const isChatroomAdmin = existingChatroom
+        ? existingChatroom.admins.some((admin) => admin.id == req.user._id)
+        : false;
+
+      if (!isChatroomAdmin) {
+        return res
+          .status(403)
+          .json({ message: "Can't remove the message - Not authorized" });
+      }
     }
 
     Message.deleteOne({ _id: messageId })
