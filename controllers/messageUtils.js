@@ -233,7 +233,7 @@ export const removeMessage = async (req, res) => {
 
     res.status(200).json({
       message: "The message has been deleted successfully",
-      message: existingMessage,
+      deletedMessage: existingMessage,
     });
   } catch (err) {
     console.log("An error occurred while deleting a message: ", err.message);
