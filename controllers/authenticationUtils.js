@@ -67,6 +67,12 @@ export const signup = async (req, res) => {
       res.status(400).json({ message: "Invalid user data" });
     }
   } catch (err) {
+    if (err.code === "DUPLICATE_USER") {
+      return res
+        .status(409)
+        .json({ message: "The username or the email is already registered" });
+    }
+
     console.log("An error occurred during signup process", err.message);
     res.status(500).json({ message: "Internal server error" });
   }

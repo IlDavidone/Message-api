@@ -85,10 +85,22 @@ const mysqlExistsByUsername = async (username) => {
 const mysqlInsertUser = async ({username, email, passwordSalt, passwordHash}) => {
   const newDate = new Date();
   
-  const [result] = await getMysqlPool().execute(
-    "INSERT INTO users (username, email, password_salt, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
-    [username, email, passwordSalt, passwordHash, newDate]
-  );
+  let result;
+
+  try {
+    [result] = await getMysqlPool().execute(
+      "INSERT INTO users (username, email, password_salt, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
+      [username, email, passwordSalt, passwordHash, newDate]
+    );
+  } catch (err) {
+    if (err.errno === 1062) {
+      const duplicateUserError = new Error(err.message);
+      duplicateUserError.code = "DUPLICATE_USER";
+      throw duplicateUserError;
+    }
+
+    throw err;
+  }
 
   return {
     _id: result.insertId,
