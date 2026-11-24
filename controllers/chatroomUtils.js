@@ -419,7 +419,7 @@ export const removeAdminInChatroom = async (req, res) => {
       (admin) => admin.username.toLowerCase() === name.toLowerCase()
     );
 
-    if (checkIfAdminExists != undefined) {
+    if (checkIfAdminExists === undefined) {
       return res
         .status(400)
         .json({ message: "The selected admin doesn't exist" });
