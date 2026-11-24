@@ -1,7 +1,16 @@
+const mongoose = require("mongoose");
 const User = require("../config/database/users");
 
 const findByEmail = async (email) => {
   return await User.findOne({ email: email });
+};
+
+const findById = async (id) => {
+  if (!mongoose.isValidObjectId(id)) {
+    return null;
+  }
+
+  return await User.findById(id);
 };
 
 const existsByUsername = async (username) => {
@@ -27,6 +36,7 @@ const insertUser = async ({ username, email, passwordSalt, passwordHash }) => {
 
 const mongoRepository = {
   findByEmail,
+  findById,
   existsByUsername,
   insertUser,
   close: async () => {},
@@ -68,6 +78,15 @@ const mysqlFindByEmail = async (email) => {
   const [rows] = await getMysqlPool().execute(
     "SELECT id, username, email, password_salt, password_hash, is_admin, is_verified, created_at FROM users WHERE email = ?",
     [email]
+  );
+
+  return rows.length === 0 ? null : toUser(rows[0]);
+};
+
+const mysqlFindById = async (id) => {
+  const [rows] = await getMysqlPool().execute(
+    "SELECT id, username, email, password_salt, password_hash, is_admin, is_verified, created_at FROM users WHERE id = ?",
+    [id]
   );
 
   return rows.length === 0 ? null : toUser(rows[0]);
@@ -123,6 +142,7 @@ const mysqlClose = async () => {
 
 const mysqlRepository = {
   findByEmail: mysqlFindByEmail,
+  findById: mysqlFindById,
   existsByUsername: mysqlExistsByUsername,
   insertUser: mysqlInsertUser,
   close: mysqlClose,
