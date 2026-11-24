@@ -303,7 +303,7 @@ export const addAdminToChatroom = async (req, res) => {
     }
 
     const existingUser = await User.findOne({
-      username: { $regex: name, $options: "i" },
+      username: { $regex: `^${name}$`, $options: "i" },
     });
 
     if (!existingUser) {
