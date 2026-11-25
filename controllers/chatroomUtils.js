@@ -227,7 +227,7 @@ export const updateChatroom = async (req, res) => {
     }
 
     let checkIfNameExists = await Chatroom.findOne({
-      name: { $regex: name, $options: "i" },
+      name: { $regex: `^${name}$`, $options: "i" },
     });
 
     if (!checkIfNameExists) {
