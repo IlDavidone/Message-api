@@ -83,10 +83,28 @@ const mysqlFindByEmail = async (email) => {
   return rows.length === 0 ? null : toUser(rows[0]);
 };
 
+const toMysqlId = (id) => {
+  if (typeof id === "number" && Number.isInteger(id) && id > 0) {
+    return id;
+  }
+
+  if (typeof id === "string" && /^\d+$/.test(id)) {
+    return Number(id);
+  }
+
+  return null;
+};
+
 const mysqlFindById = async (id) => {
+  const mysqlId = toMysqlId(id);
+
+  if (mysqlId === null) {
+    return null;
+  }
+
   const [rows] = await getMysqlPool().execute(
     "SELECT id, username, email, password_salt, password_hash, is_admin, is_verified, created_at FROM users WHERE id = ?",
-    [id]
+    [mysqlId]
   );
 
   return rows.length === 0 ? null : toUser(rows[0]);
