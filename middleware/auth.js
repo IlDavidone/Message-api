@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../config/database/users");
+const { findById } = require("../repositories/userRepository");
 
 const authenticatedRoute = async (req, res, next) => {
   try {
@@ -19,15 +19,20 @@ const authenticatedRoute = async (req, res, next) => {
       .json({ message: "You are not authorized, invalid token provided" });
     }
 
-    const user = await User.findById(decodedToken.userId).select(
-      "-passwordSalt -passwordHash"
-    );
+    const user = await findById(decodedToken.userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    req.user = user;
+    req.user = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      admin: user.admin,
+      verification: user.verification,
+      creationDate: user.creationDate,
+    };
 
     next();
   } catch (err) {
