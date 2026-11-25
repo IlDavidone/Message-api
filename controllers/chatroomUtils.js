@@ -413,6 +413,12 @@ export const removeAdminInChatroom = async (req, res) => {
       });
     }
 
+    if (existingChatroom.owner == existingUser.id) {
+      return res
+        .status(409)
+        .json({ message: "The owner cannot be removed from the admins" });
+    }
+
     let adminArray = existingChatroom.admins;
 
     const checkIfAdminExists = adminArray.find(
