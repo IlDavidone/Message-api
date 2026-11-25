@@ -388,7 +388,7 @@ export const removeAdminInChatroom = async (req, res) => {
     }
 
     const existingUser = await User.findOne({
-      username: { $regex: name, $options: "i" },
+      username: { $regex: `^${name}$`, $options: "i" },
     });
 
     if (!existingUser) {
