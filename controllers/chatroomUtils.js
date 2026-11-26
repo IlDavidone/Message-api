@@ -499,6 +499,18 @@ export const sendPartecipantInvitation = async (req, res) => {
       });
     }
 
+    const pendingInvitation = await Invitation.findOne({
+      chatroomId: existingChatroom._id,
+      recipient: existingUser._id,
+      accepted: false,
+    });
+
+    if (pendingInvitation) {
+      return res.status(409).json({
+        message: "The user already has a pending invitation to this chatroom",
+      });
+    }
+
     const invitationInsertion = new Invitation({
       chatroomId: existingChatroom._id,
       creator: req.user._id,
