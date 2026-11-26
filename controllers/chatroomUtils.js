@@ -488,6 +488,17 @@ export const sendPartecipantInvitation = async (req, res) => {
         .json({ message: `No entry found with ${chatroomName} chatroom name` });
     }
 
+    const isOwner = existingChatroom.owner == req.user._id;
+    const isAdmin = existingChatroom.admins.some(
+      (admin) => admin.id == req.user._id
+    );
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        message: "You are not authorized to invite users to this chatroom",
+      });
+    }
+
     const invitationInsertion = new Invitation({
       chatroomId: existingChatroom._id,
       creator: req.user._id,
