@@ -240,7 +240,7 @@ export const updateChatroom = async (req, res) => {
       chatroomProperties.name = name;
     }
 
-    if (isPublic) {
+    if (isPublic !== undefined) {
       chatroomProperties.isPublic = isPublic;
     }
 
