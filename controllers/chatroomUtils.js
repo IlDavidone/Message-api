@@ -479,7 +479,7 @@ export const sendPartecipantInvitation = async (req, res) => {
     }
 
     const existingChatroom = await Chatroom.findOne({
-      name: { $regex: chatroomName, $options: "i" },
+      name: { $regex: `^${chatroomName}$`, $options: "i" },
     });
 
     if (!existingChatroom) {
