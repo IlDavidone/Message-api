@@ -226,6 +226,12 @@ export const updateChatroom = async (req, res) => {
         .json({ message: `No chatroom with the provided id found` });
     }
 
+    if (chatroomProperties.owner != req.user._id) {
+      return res.status(403).json({
+        message: "You are not authorized to update this chatroom - Only the owner can",
+      });
+    }
+
     let checkIfNameExists = await Chatroom.findOne({
       name: { $regex: `^${name}$`, $options: "i" },
     });
