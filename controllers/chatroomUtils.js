@@ -251,12 +251,27 @@ export const updateChatroom = async (req, res) => {
         });
       }
 
-      const ownerId = await User.findOne({
-        name: { $regex: owner, $options: "i" },
+      const newOwner = await User.findOne({
+        username: { $regex: `^${owner}$`, $options: "i" },
       });
-      if (ownerId) {
-        chatroomProperties.owner = ownerId._id;
+
+      if (!newOwner) {
+        return res
+          .status(404)
+          .json({ message: "No user found with the provided username" });
       }
+
+      const isParticipant = chatroomProperties.partecipants.some(
+        (partecipant) => partecipant.id == newOwner.id
+      );
+
+      if (!isParticipant) {
+        return res.status(400).json({
+          message: "The new owner must be a partecipant of the chatroom",
+        });
+      }
+
+      chatroomProperties.owner = newOwner._id;
     }
 
     let chatroomImage = "";
