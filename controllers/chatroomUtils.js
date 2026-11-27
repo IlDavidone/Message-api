@@ -505,6 +505,12 @@ export const sendPartecipantInvitation = async (req, res) => {
       });
     }
 
+    if (existingUser.id == req.user._id) {
+      return res.status(400).json({
+        message: "You cannot invite yourself to a chatroom",
+      });
+    }
+
     const pendingInvitation = await Invitation.findOne({
       chatroomId: existingChatroom._id,
       recipient: existingUser._id,
