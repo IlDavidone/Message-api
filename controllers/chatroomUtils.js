@@ -6,20 +6,11 @@ const User = require("../config/database/users");
 const Chatroom = require("../config/database/chatrooms");
 const Invitation = require("../config/database/invitations");
 const { isValidUploadSource } = require("./uploadValidation");
+const chatroomRepository = require("../repositories/chatroomRepository");
 
 export const getUserChatrooms = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
-    const userPartecipationsArray = user.partecipates;
-
-    let chatroomsArray = [];
-
-    for (let i = 0; i < userPartecipationsArray.length; i++) {
-      const chatroomId = await Chatroom.findById(
-        userPartecipationsArray[i].chatroomId
-      );
-      chatroomsArray.push(chatroomId);
-    }
+    const chatroomsArray = await chatroomRepository.findByUserId(req.user._id);
 
     res.status(200).json(chatroomsArray);
   } catch (err) {
