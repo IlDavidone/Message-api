@@ -511,6 +511,16 @@ export const sendPartecipantInvitation = async (req, res) => {
       });
     }
 
+    const isAlreadyParticipant = existingChatroom.partecipants.some(
+      (partecipant) => partecipant.id == existingUser.id
+    );
+
+    if (isAlreadyParticipant) {
+      return res.status(409).json({
+        message: "The user is already a partecipant of this chatroom",
+      });
+    }
+
     const pendingInvitation = await Invitation.findOne({
       chatroomId: existingChatroom._id,
       recipient: existingUser._id,
