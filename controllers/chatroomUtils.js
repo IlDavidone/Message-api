@@ -236,9 +236,13 @@ export const updateChatroom = async (req, res) => {
       name: { $regex: `^${name}$`, $options: "i" },
     });
 
-    if (!checkIfNameExists) {
-      chatroomProperties.name = name;
+    if (checkIfNameExists) {
+      return res.status(409).json({
+        message: "A chatroom with the provided name already exists",
+      });
     }
+
+    chatroomProperties.name = name;
 
     if (isPublic !== undefined) {
       chatroomProperties.isPublic = isPublic;
